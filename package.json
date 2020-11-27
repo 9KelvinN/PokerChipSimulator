@@ -1,0 +1,9 @@
+{
+  "name": "Poker Chips Simulator",
+  "version": "0.0.1",
+  "description": "A web app allowing you to play poker with friends even when you don't have physical pokerchips",
+  "dependencies": {
+    "express": "^4.15.2",
+    "socket.io": "^3.0.3"
+  }
+}
