@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link href='https://fonts.googleapis.com/css?family=Cinzel' rel='stylesheet'>
+    <style>
+        #prompt {
+            font-family: 'Cinzel';font-size: 22px;
+        }
+        #submitButton {
+            font-family: 'Cinzel';font-size: 22px;
+        }
+    </style>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Join Table</title>
+    <link rel="icon" href="images/CHIP.png" type="image/x-icon">
+
+    <!-- main css -->
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/style2.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="container main-container clearfix"> 
+            <a href="join.html"><img src="images/JoinButton.png" class="img-responsive" id="joinTitle" alt="" /></a>
+            <div class="col-md-12">
+                <div id="code">
+                    <form>
+                        <h1 class="inputCenter" id="prompt"><b>USERNAME:</b></h1>
+                        <input class="inputCenter" type="text" id="username" name="username"><br>
+                        <h1 class="inputCenter" id="prompt"><b>JOIN CODE:</b></h1>
+                        <input class="inputCenter" type="text" id="joinCode" name="joinCode"><br>
+                        <input class="inputCenter" onClick="location.href='waiting.html'" type="button" value="JOIN" id="submitButton">
+                    </form>
+                </div>
+            </div>
+            <a href="index.html"><img src="images/Menu.png" class="img-responsive" id="menuButton" alt="" /></a>
+        </div>
+    </div>
+</body>

@@ -1,0 +1,278 @@
+body {
+    background: url(../images/Background3.png) no-repeat center center fixed; 
+    background-size: cover;
+}
+
+#content {
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+#centered1 {
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#centered {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5%;
+}
+
+#host1 {
+    position: fixed;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#host {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5%;
+}
+
+#hostTitle1 {
+    position: fixed;
+    top: 15%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#hostTitle {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5%;
+}
+
+#join1 {
+    position: fixed;
+    top: 80%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#join {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5%;
+}
+
+#joinTitle1 {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#joinTitle {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5%;
+}
+
+#code1 {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#code {
+    margin: 0%;
+}
+
+#settings1 {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#settings {
+    margin: 0%;
+}
+
+.inputCenter {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 30%;
+    line-height: 150%;
+    text-align: center;
+    font-size: 200%;
+}
+
+#joinCode {
+    text-align: center;
+}
+
+#prompt {
+    color: #D4AF37;
+    text-align: center;
+    font-size: 220%;
+}
+
+.prompt {
+    color: #D4AF37;
+    text-align: center;
+    font-size: 220%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+
+#submitButton {
+    line-height: 200%;
+}
+
+#menuButton {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10%;
+}
+
+form {
+    margin-top: 10%;
+    margin-bottom: 10%;
+}
+
+body {
+    margin-top: 25px;
+    font-size: 21px;
+    text-align: center;
+
+    -webkit-animation: fadein 2s; /* Safari, Chrome and Opera > 12.1 */
+    -moz-animation: fadein 2s; /* Firefox < 16 */
+    -ms-animation: fadein 2s; /* Internet Explorer */
+    -o-animation: fadein 2s; /* Opera < 12.1 */
+    animation: fadein 2s;
+}
+
+#joinCodeTitle {
+    font-size: 200%;
+    color: white;
+}
+
+#joinCodeNumber {
+    font-size: 400%;
+    color: #D4AF37;
+}
+
+#joinCodeShare {
+    font-size: 150%;
+    color: white;
+}
+
+#tableTop {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 150%;
+    z-index: 0;
+}
+
+#tableArea {
+    height: 150%;
+    padding: 0px 0px 0px 0px;
+}
+
+.player {
+    width: 10%;
+    z-index: 1;
+}
+
+#player1 {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    top: 13%;
+}
+
+#player2 {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    top: 15%;
+}
+
+#player3 {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    top: 17%;
+}
+
+#player4 {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    top: 19%;
+}
+
+#player5 {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    top: 21%;
+}
+
+.playerName {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    color: #D4AF37;
+}
+
+#board {
+    height: 100%;
+    background-image: url("../images/tableVertical.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: auto 90%;
+}
+
+@keyframes fadein {
+from { opacity: 0; }
+to   { opacity: 1; }
+}
+
+/* Firefox < 16 */
+@-moz-keyframes fadein {
+from { opacity: 0; }
+to   { opacity: 1; }
+}
+
+/* Safari, Chrome and Opera > 12.1 */
+@-webkit-keyframes fadein {
+from { opacity: 0; }
+to   { opacity: 1; }
+}
+
+/* Internet Explorer */
+@-ms-keyframes fadein {
+from { opacity: 0; }
+to   { opacity: 1; }
+}
+
+/* Opera < 12.1 */
+@-o-keyframes fadein {
+from { opacity: 0; }
+to   { opacity: 1; }
+}
