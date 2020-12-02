@@ -14,12 +14,10 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
     <title>Host Table</title>
     <link rel="icon" href="images/CHIP.png" type="image/x-icon">
 
-    <!-- main css -->
     <link href="css/style.css" rel="stylesheet">
     <link href="css/style2.css" rel="stylesheet">
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -34,12 +32,16 @@
                     <form>
                         <h1 class="prompt" id="prompt"><b>USERNAME:</b></h1>
                         <input class="inputCenter" type="text" id="username" name="username"><br>
+
                         <h1 class="prompt"><b>NUMBER OF PLAYERS:</b></h1>
-                        <input class="inputCenter" type="text" id="numPlayers" name="numPlayers"><br>
-                        <h1 class="prompt"><b>CHIPS PER PLAYER:</b></h1>
-                        <input class="inputCenter" type="text" id="chipsPerPlayer" name="chipsPerPlayer"><br>
-                        <h1 class="prompt"><b>ANTE:</b></h1>
-                        <input class="inputCenter" type="text" id="ante" name="ante"><br>
+                        <input class="inputCenter" type="text" id="numPlayers" name="numPlayers" value="5"><br>
+
+                        <h1 class="prompt"><b>STARTING AMOUNT:</b></h1>
+                        <input class="inputCenter" type="text" id="startingAmount" name="startingAmount" value="500"><br>
+
+                        <h1 class="prompt"><b>BIG BLIND:</b></h1>
+                        <input class="inputCenter" type="text" id="bigBlind" name="bigBlind" value="20"><br>
+                        
                         <input class="inputCenter" onClick="location.href='waiting.html'" type="button" value="CREATE" id="submitButton">
                     </form>
                     <a href="index.html"><img src="images/Menu.png" class="img-responsive" id="menuButton" alt="" /></a>
