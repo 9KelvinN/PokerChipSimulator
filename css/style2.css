@@ -1157,6 +1157,33 @@ textarea:focus {
     .player {
         width: 15%;
     }
+    .playername {
+        width: 10%;
+    }
+    #potAmount {
+        font-size: 100%;
+    }
+    .dollar {
+        font-size: 100%;
+    }
+}
+
+@media only screen and (max-width: 790px) {
+    .dynamicText {
+        font-size: 80%;
+    }
+
+    #player1, #player2, #player3, #player4, #player5 {
+        width: 30%;
+    }
+
+    #player3, #player2 {
+        left: 0%;
+    }
+
+    #player4, #player5 {
+        right: 0%;
+    }
 }
 
 @media only screen and (max-width: 670px) {
@@ -1186,6 +1213,15 @@ textarea:focus {
     .player {
         width: 20%;
     }
+    .playername {
+        width: 10%;
+    }
+    .dollar {
+        font-size: 100%;
+    }
+    #boardSide {
+        width: 70%;
+    }
 }
 
 @media only screen and (max-width: 520px) {
@@ -1201,6 +1237,13 @@ textarea:focus {
     .player {
         width: 25%;
     }
+    #boardSide {
+        height: 100%;
+        width: 100%;
+    }
+    #player1, #player2, #player3, #player4, #player5 {
+        width: 20%;
+    }
 }
 
 @media only screen and (max-width: 420px) {
@@ -1213,5 +1256,93 @@ textarea:focus {
     .top-bar h1 {
         font-size: 30px;
         line-height: 30px;
+    }
+
+    #player1 {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        position: relative;
+        width: 25%;
+    }
+    
+    #player1C {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        position: relative;
+        width: 100%;
+    }
+    
+    #player3 {
+        display: block;
+        position: absolute;
+        top: 20%;
+        width: 25%;
+        left: 0%;
+    }
+    
+    #player3C {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        position: relative;
+        width: 100%;
+    }
+    
+    #player4 {
+        display: block;
+        position: absolute;
+        top: 20%;
+        width: 25%;
+        right: 0%;
+    }
+    
+    #player4C {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        position: relative;
+        width: 100%;
+    }
+    
+    #player2 {
+        display: block;
+        position: absolute;
+        top: 50%;
+        width: 25%;
+        left: 0%;
+    }
+    
+    #player2C {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        position: relative;
+        width: 100%;
+    }
+    
+    #player5 {
+        display: block;
+        position: absolute;
+        top: 50%;
+        width: 25%;
+        right: 0%;
+    }
+    
+    #player5C {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        position: relative;
+        width: 100%;
+    }
+
+    .inputCenter {
+        width: 100%;
+    }
+
+    .prompt, #prompt {
+        font-size: 150%;
     }
 }
