@@ -28,10 +28,13 @@ io.on('connection', (socket) => {
       io.emit('hostGame', joinCode);
     });
 
-    socket.on('joinGame', (joinCode) =>{
+    socket.on('joinGame', (data) =>{
       //real invalid code check to be implemented
-      if (games.has(joinCode)){
-        io.emit('joinGame', joinCode);
+      if (games.has(data.joinCode)){
+        sockets.set(socket, {username: data.username, room:data.joinCode});
+        game = games.get(data.joinCode)
+        game.players.set(data.username, new Player(game.startingAmount));
+        io.emit('joinGame', data.joinCode);
       } 
       else {
         io.emit('joinGame', -1);
@@ -51,7 +54,7 @@ class Game {
   constructor( numPlayers, startingAmount, blind) {
       this.numPlayers = numPlayers;
       this.players = new Map();
-      this.startingBalance = startingAmount;
+      this.startingAmount = startingAmount;
       this.blind = blind;
   }
 }

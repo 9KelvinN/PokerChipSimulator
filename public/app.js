@@ -64,7 +64,7 @@ joinSubmitButton.addEventListener('click', () => {
     if (username == "") {
         // invalid name
     }
-    socket.emit('joinGame', joinCode);
+    socket.emit('joinGame', {username: username, joinCode: joinCode});
     //nonexistant room exception to be implemented
 })
 socket.on('joinGame', (joinCode) => {
