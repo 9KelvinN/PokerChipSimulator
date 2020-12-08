@@ -34,8 +34,24 @@ io.on('connection', (socket) => {
     });
 });
 
+class Player {
+  constructor(name, balance, state, bet) {
+      this.name = name;
+      this.balance = balance;
+      this.state = state;
+      this.bet = bet;
+  }
+}
 
+class Game {
+  constructor(roomCode, players, startingBalance, blind) {
+      this.roomCode = roomCode;
+      this.players = players;
+      this.startingBalance = startingBalance;
+      this.blind = blind;
+  }
+}
 
-server.listen(port, () => {
+http.listen(port, () => {
   console.log('listening on *:' + port);
 });
