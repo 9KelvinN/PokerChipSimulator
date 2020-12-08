@@ -22,6 +22,16 @@ io.on('connection', (socket) => {
       // To implement feature ensuring different numbers 
       io.emit('hostGame', joinCode);
     });
+
+    socket.on('joinGame', (joinCode) =>{
+      //real invalid code check to be implemented
+      if (true){
+        io.emit('joinGame', -1);
+      } 
+      else {
+        io.emit('joinGame', joinCode);
+      }
+    });
 });
 
 

@@ -68,9 +68,15 @@ joinSubmitButton.addEventListener('click', () => {
     //nonexistant room exception to be implemented
 })
 socket.on('joinGame', (joinCode) => {
-    document.getElementById('joinCodeNumber').innerHTML = joinCode;
-    presentScreen(waitingScreen);
-});    
+    if (joinCode == -1){
+        //real invalid code msg to be outputted
+        document.getElementById('joinCode').value = "Invalid code";
+    }
+    else{
+        document.getElementById('joinCodeNumber').innerHTML = joinCode;
+        presentScreen(waitingScreen);
+    }
+}); 
 
 startButton.addEventListener('click', () => {
     presentScreen(tableScreen);
