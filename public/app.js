@@ -1,6 +1,7 @@
 // Everything client-side goes in here
 
-// var socket = io();
+
+let socket = io();
 
 const menuScreen = document.querySelector('.menu-screen');
 let hostButton = document.getElementById('hostButton');
@@ -25,6 +26,7 @@ function init() {
 
 hostButton.addEventListener('click', () => {
     presentScreen(hostScreen);
+
 })
 
 joinButton.addEventListener('click', () => {
@@ -48,8 +50,13 @@ hostSubmitButton.addEventListener('click', () => {
     if (smallBlind > startingAmount) {
         // invalid small blind
     }
-    presentScreen(waitingScreen);
+    socket.emit('hostGame');
 })
+
+socket.on('hostGame', (joinCode) => {
+    document.getElementById('joinCodeNumber').innerHTML = joinCode;
+    presentScreen(waitingScreen);
+});
 
 joinSubmitButton.addEventListener('click', () => {
     let username = document.getElementById('joinUsername').value;
@@ -57,9 +64,19 @@ joinSubmitButton.addEventListener('click', () => {
     if (username == "") {
         // invalid name
     }
-    // see if join code exists
-    presentScreen(tableScreen);
+    socket.emit('joinGame', joinCode);
+    //nonexistant room exception to be implemented
 })
+socket.on('joinGame', (joinCode) => {
+    if (joinCode == -1){
+        //real invalid code msg to be outputted
+        document.getElementById('joinCode').value = "Invalid code";
+    }
+    else{
+        document.getElementById('joinCodeNumber').innerHTML = joinCode;
+        presentScreen(waitingScreen);
+    }
+}); 
 
 startButton.addEventListener('click', () => {
     presentScreen(tableScreen);
