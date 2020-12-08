@@ -79,8 +79,24 @@ socket.on('joinGame', (joinCode) => {
 }); 
 
 startButton.addEventListener('click', () => {
-    presentScreen(tableScreen);
+    socket.emit('startGame')
 })
+
+socket.on('startGame', (gameState) => {
+    presentScreen(tableScreen);
+}); 
+
+
+socket.on('joinGame', (joinCode) => {
+    if (joinCode == -1){
+        //real invalid code msg to be outputted
+        document.getElementById('joinCode').value = "Invalid code";
+    }
+    else{
+        document.getElementById('joinCodeNumber').innerHTML = joinCode;
+        presentScreen(waitingScreen);
+    }
+}); 
 
 function presentScreen(screen) {
     for (let i = 0; i < screens.length; i++) {

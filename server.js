@@ -25,20 +25,27 @@ io.on('connection', (socket) => {
       //Adds player to the games player list
       games.get(joinCode).players.set(data.username, new Player(data.startingAmount));
       // To implement feature ensuring different numbers 
-      io.emit('hostGame', joinCode);
+      socket.emit('hostGame', joinCode);
     });
 
     socket.on('joinGame', (data) =>{
       //real invalid code check to be implemented
       if (games.has(data.joinCode)){
+        socket.join('Room:' + data.joinCode)
         sockets.set(socket, {username: data.username, room:data.joinCode});
         game = games.get(data.joinCode)
         game.players.set(data.username, new Player(game.startingAmount));
-        io.emit('joinGame', data.joinCode);
+        socket.emit('joinGame', data.joinCode);
       } 
       else {
-        io.emit('joinGame', -1);
+        socket.emit('joinGame', -1);
       }
+    });
+
+    socket.on('startGame',() =>{
+      user = sockets.get(socket);
+      roomCode = user.room;
+      io.in('Room:' + roomCode).emit('startGame', (games.get(roomCode))); 
     });
 });
 
