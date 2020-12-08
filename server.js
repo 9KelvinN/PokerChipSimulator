@@ -51,7 +51,6 @@ class Game {
       this.blind = blind;
   }
 }
-
-http.listen(port, () => {
+server.listen(port, () => {
   console.log('listening on *:' + port);
 });
