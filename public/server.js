@@ -1,3 +1,5 @@
+// Everything server-side goes in here
+
 var express = require('express');
 var app = express();
 var http = require('http').createServer(app);
