@@ -50,7 +50,7 @@ hostSubmitButton.addEventListener('click', () => {
     if (smallBlind > startingAmount) {
         // invalid small blind
     }
-    socket.emit('hostGame');
+    socket.emit('hostGame', {username: username, numPlayers: numPlayers, startingAmount:startingAmount, smallBlind: smallBlind});
 })
 
 socket.on('hostGame', (joinCode) => {
