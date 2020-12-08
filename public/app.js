@@ -68,7 +68,7 @@ startButton.addEventListener('click', () => {
 function presentScreen(screen) {
     for (let i = 0; i < screens.length; i++) {
         const other = screens[i];
-        if (other != element) {
+        if (other != screen) {
             fadeOut(other);
         }
     }
