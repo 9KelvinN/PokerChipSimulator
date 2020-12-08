@@ -3,6 +3,8 @@
 
 <head>
     <meta charset="utf-8">
+    <link href='https://fonts.googleapis.com/css?family=Cinzel' rel='stylesheet'>
+    
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -15,61 +17,135 @@
 </head>
 
 <body onload="init()">
-    <div class="menu-screen">
-        <div class="container main-container clearfix container-fluid"> 
-            <img src="./images/Title.png" class="img-responsive" id="centered" alt="" />
-            <div class="col-md-12">
-                <a href="#" id="hostButton"><img src="./images/HostButton.png" class="img-responsive" id="host" alt="" /></a>
-                <a href="#" id="joinButton"><img src="./images/JoinButton.png" class="img-responsive" id="join" alt="" /></a>
-            </div>
-        </div>
-    </div>
-
-    <div class="host-screen">
-        <div class="container main-container clearfix container-fluid"> 
-            <div class="col-md-12">
-                <div id="settings">
-                    <a href="#" id="hostButton"><img src="images/HostButton.png" class="img-responsive" id="hostTitle" alt="" /></a>
-                    <form>
-                        <h1 class="prompt" id="prompt"><b>USERNAME:</b></h1>
-                        <input class="inputCenter" type="text" id="username" name="username"><br>
-
-                        <h1 class="prompt"><b>NUMBER OF PLAYERS:</b></h1>
-                        <input class="inputCenter" type="text" id="numPlayers" name="numPlayers" value="5"><br>
-
-                        <h1 class="prompt"><b>STARTING AMOUNT:</b></h1>
-                        <input class="inputCenter" type="text" id="startingAmount" name="startingAmount" value="500"><br>
-
-                        <h1 class="prompt"><b>BIG BLIND:</b></h1>
-                        <input class="inputCenter" type="text" id="bigBlind" name="bigBlind" value="20"><br>
-                        
-                        <input class="inputCenter" onClick="location.href='waiting.html'" type="button" value="CREATE" id="submitButton">
-                    </form>
-                    <a href="#" onClick="init()"><img src="images/Menu.png" class="img-responsive" id="menuButton" alt="" /></a>
+    <div class="parent">
+        <div class="menu-screen child">
+            <div class="container main-container clearfix container-fluid"> 
+                <img src="./images/Title.png" class="img-responsive" id="centered" alt="" />
+                <div class="col-md-12">
+                    <a href="#" id="hostButton"><img src="./images/HostButton.png" class="img-responsive" id="host" alt="" /></a>
+                    <a href="#" id="joinButton"><img src="./images/JoinButton.png" class="img-responsive" id="join" alt="" /></a>
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="join-screen">
-        <div class="container main-container clearfix container-fluid"> 
-            <a href="#"><img src="images/JoinButton.png" class="img-responsive" id="joinTitle" alt="" /></a>
-            <div class="col-md-12">
-                <div id="code">
-                    <form>
-                        <h1 class="inputCenter" id="prompt"><b>USERNAME:</b></h1>
-                        <input class="inputCenter" type="text" id="username" name="username"><br>
-
-                        <h1 class="inputCenter" id="prompt"><b>JOIN CODE:</b></h1>
-                        <input class="inputCenter" type="text" id="joinCode" name="joinCode"><br>
-                        
-                        <input class="inputCenter" onClick="location.href='waiting.html'" type="button" value="JOIN" id="submitButton">
-                    </form>
-                </div>
-            </div>
-            <a href="#" onClick="init()"><img src="images/Menu.png" class="img-responsive" id="menuButton" alt="" /></a>
-        </div>
-    </div>
     
+        <div class="host-screen child">
+            <div class="container main-container clearfix container-fluid"> 
+                <div class="col-md-12">
+                    <div id="settings">
+                        <a href="#" id="hostButton"><img src="images/HostButton.png" class="img-responsive" id="hostTitle" alt="" /></a>
+                        <form>
+                            <h1 class="prompt"><b>USERNAME:</b></h1>
+                            <input class="inputCenter" type="text" id="hostUsername" name="username"><br>
+    
+                            <h1 class="prompt"><b>NUMBER OF PLAYERS:</b></h1>
+                            <input class="inputCenter" type="text" id="numPlayers" name="numPlayers" value="5"><br>
+    
+                            <h1 class="prompt"><b>STARTING AMOUNT:</b></h1>
+                            <input class="inputCenter" type="text" id="startingAmount" name="startingAmount" value="500"><br>
+    
+                            <h1 class="prompt"><b>SMALL BLIND:</b></h1>
+                            <input class="inputCenter" type="text" id="smallBlind" name="bigBlind" value="20"><br>
+                            
+                            <input class="inputCenter" id="hostSubmitButton" type="button" value="CREATE" id="submitButton">
+                        </form>
+                        <a href="#" onClick="init()"><img src="images/Menu.png" class="img-responsive" id="menuButton" alt="" /></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="join-screen child">
+            <div class="container main-container clearfix container-fluid"> 
+                <a href="#"><img src="images/JoinButton.png" class="img-responsive" id="joinTitle" alt="" /></a>
+                <div class="col-md-12">
+                    <div id="code">
+                        <form>
+                            <h1 class="inputCenter prompt"><b>USERNAME:</b></h1>
+                            <input class="inputCenter" type="text" id="joinUsername" name="username"><br>
+    
+                            <h1 class="inputCenter prompt"><b>JOIN CODE:</b></h1>
+                            <input class="inputCenter" type="text" id="joinCode" name="joinCode"><br>
+                            
+                            <input class="inputCenter" id="joinSubmitButton" type="button" value="JOIN" id="submitButton">
+                        </form>
+                    </div>
+                </div>
+                <a href="#" onClick="init()"><img src="images/Menu.png" class="img-responsive" id="menuButton" alt="" /></a>
+            </div>
+        </div>
+    
+        <div class="waiting-screen child">
+            <div class="container main-container clearfix container-fluid"> 
+                <div class="col-md-12">
+                    <h1 class="joinCode" id="joinCodeTitle">JOIN CODE:</h1>
+                    <h1 class="joinCode" id="joinCodeNumber">0000</h1>
+                    <h1 class="joinCode" id="joinCodeShare">Share this code with your friends!</h1>
+                    <div id="settings">
+                        <a href="#" id="startButton"><img src="images/StartGame.png" class="img-responsive" id="menuButton" alt="" /></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-screen" id="boardSide">
+        <img src="images/tableVertical.png" class="player" id="table" alt="" />
+
+        <div id="player1" class="playerName"><h4 class="dynamicText">Player 1</h4><h1 class="dollar" id="bottomDollar">$5000</h1>
+            <img src="images/PlayerCard.png" class="player" id="player1C" alt="" />
+        </div>
+
+        <div id="player2" class="playerName"><h4 class="dynamicText">Player 2</h4><h1 class="dollar">$5000</h1>
+            <img src="images/PlayerCard.png" class="player" id="player2C" alt="" />
+        </div>
+
+        <div id="player3" class="playerName"><h4 class="dynamicText">Player 3</h4><h1 class="dollar">$5000</h1>
+            <img src="images/PlayerCard.png" class="player" id="player3C" alt="" />
+        </div>
+
+        <div id="player4" class="playerName"><h4 class="dynamicText">Player 4</h4><h1 class="dollar">$5000</h1>
+            <img src="images/PlayerCard.png" class="player" id="player4C" alt="" />
+        </div>
+
+        <div id="player5" class="playerName"><h4 class="dynamicText">Player 5</h4><h1 class="dollar">$5000</h1>
+            <img src="images/PlayerCard.png" class="player" id="player5C" alt="" />
+        </div>
+
+        <div id="pot" class="text">POT<h4 class="dynamicText" id="potAmount">$5000</h4></div>
+        
+        <div id="bet" class="text">
+            <form id="yourTurn">
+                <input type="radio" id="raise" name="turn" value="raise">
+                <label for="raise">RAISE</label><br>
+
+                <input type="radio" id="call" name="turn" value="call">
+                <label for="call">CALL</label><br>
+
+                <input type="radio" id="fold" name="turn" value="fold">
+                <label for="fold">FOLD</label>
+
+                <p id="betLabel">BET:</p>
+                <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+                <p>$<span id="demo"></span></p>
+
+                <input onClick="" type="button" value="PLAY" id="playTurn">
+            </form>
+        </div>
+    </div>
+    <script>
+        var slider = document.getElementById("myRange");
+        var output = document.getElementById("demo");
+        output.innerHTML = slider.value; // Display the default slider value
+
+        // Update the current slider value (each time you drag the slider handle)
+        slider.oninput = function() {
+            output.innerHTML = this.value;
+        }
+
+        document.getElementById("player1").style.color = "#D4AF37";
+        document.getElementById("player5").style.color = "#4169e1";
+    </script>
+
     <script src="app.js" charset="utf-8"></script>
+    <script src="server.js" charset="utf-8"></script>
 </body>

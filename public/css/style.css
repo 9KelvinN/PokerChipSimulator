@@ -1,6 +1,17 @@
 body {
     background: url(../images/Background.png) no-repeat center center fixed; 
     background-size: cover;
+    font-family: 'Cinzel';
+    font-size: 22px;
+}
+
+.parent {
+    display: flex;
+    justify-content: center;
+}
+
+.child {
+    position: absolute;
 }
 
 #content {
@@ -61,10 +72,12 @@ body {
     line-height: 150%;
     text-align: center;
     font-size: 200%;
+    font-family: 'Cinzel';
 }
 
 #joinCode {
     text-align: center;
+    font-family: 'Cinzel';
 }
 
 #prompt {
@@ -81,6 +94,7 @@ body {
     margin-left: auto;
     margin-right: auto;
     width: 100%;
+    font-family: 'Cinzel';
 }
 
 #submitButton {
@@ -114,16 +128,19 @@ body {
 #joinCodeTitle {
     font-size: 200%;
     color: white;
+    font-family: 'Cinzel';
 }
 
 #joinCodeNumber {
     font-size: 400%;
     color: #D4AF37;
+    font-family: 'Cinzel';
 }
 
 #joinCodeShare {
     font-size: 150%;
     color: white;
+    font-family: 'Cinzel';
 }
 
 #tableTop {
@@ -196,12 +213,14 @@ body {
     text-align: center;
     color: #ffffff;
     font-size: 140%;
+    font-family: 'Cinzel';
 }
 
 .text {
     text-align: center;
     color:  #D4AF37;
     font-size: 140%;
+    font-family: 'Cinzel';
 }
 
 #board {
@@ -266,6 +285,7 @@ body {
     z-index: 2;
     color: #177408;
     margin: none;
+    font-family: 'Cinzel';
 }
 
 #bottomDollar {
