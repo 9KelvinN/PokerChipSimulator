@@ -50,7 +50,7 @@ hostSubmitButton.addEventListener('click', () => {
     if (smallBlind > startingAmount) {
         // invalid small blind
     }
-    socket.emit('hostGame');
+    socket.emit('hostGame', {username: username, numPlayers: numPlayers, startingAmount:startingAmount, smallBlind: smallBlind});
 })
 
 socket.on('hostGame', (joinCode) => {
@@ -64,7 +64,7 @@ joinSubmitButton.addEventListener('click', () => {
     if (username == "") {
         // invalid name
     }
-    socket.emit('joinGame', joinCode);
+    socket.emit('joinGame', {username: username, joinCode: joinCode});
     //nonexistant room exception to be implemented
 })
 socket.on('joinGame', (joinCode) => {
@@ -79,8 +79,24 @@ socket.on('joinGame', (joinCode) => {
 }); 
 
 startButton.addEventListener('click', () => {
-    presentScreen(tableScreen);
+    socket.emit('startGame')
 })
+
+socket.on('startGame', (gameState) => {
+    presentScreen(tableScreen);
+}); 
+
+
+socket.on('joinGame', (joinCode) => {
+    if (joinCode == -1){
+        //real invalid code msg to be outputted
+        document.getElementById('joinCode').value = "Invalid code";
+    }
+    else{
+        document.getElementById('joinCodeNumber').innerHTML = joinCode;
+        presentScreen(waitingScreen);
+    }
+}); 
 
 function presentScreen(screen) {
     for (let i = 0; i < screens.length; i++) {
