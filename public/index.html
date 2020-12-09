@@ -38,15 +38,17 @@
                             <input class="inputCenter" type="text" id="hostUsername" name="username"><br>
     
                             <h1 class="prompt"><b>NUMBER OF PLAYERS:</b></h1>
-                            <input class="inputCenter" type="text" id="numPlayers" name="numPlayers" value="5"><br>
+                            <input class="inputCenter" type="number" min="3" max="5" id="numPlayers" name="numPlayers" value="5"><br>
     
                             <h1 class="prompt"><b>STARTING AMOUNT:</b></h1>
-                            <input class="inputCenter" type="text" id="startingAmount" name="startingAmount" value="500"><br>
+                            <input class="inputCenter" type="number" min="0" step="50" id="startingAmount" name="startingAmount" value="500"><br>
     
-                            <h1 class="prompt"><b>SMALL BLIND:</b></h1>
-                            <input class="inputCenter" type="text" id="smallBlind" name="bigBlind" value="20"><br>
+                            <h1 class="prompt"><b>ANTE:</b></h1>
+                            <input class="inputCenter" type="number" min="0" step="5" id="ante" name="ante" value="20"><br>
                             
                             <input class="inputCenter" id="hostSubmitButton" type="button" value="CREATE" id="submitButton">
+
+                            <p class="error" id="hostError"></p>
                         </form>
                         <a href="#" onClick="init()"><img src="images/Menu.png" class="img-responsive" id="menuButton" alt="" /></a>
                     </div>
@@ -67,6 +69,8 @@
                             <input class="inputCenter" type="text" id="joinCode" name="joinCode"><br>
                             
                             <input class="inputCenter" id="joinSubmitButton" type="button" value="JOIN" id="submitButton">
+
+                            <p class="error" id="joinError"></p>
                         </form>
                     </div>
                 </div>
@@ -142,8 +146,8 @@
             output.innerHTML = this.value;
         }
 
-        document.getElementById("player1").style.color = "#D4AF37";
-        document.getElementById("player5").style.color = "#4169e1";
+        // document.getElementById("player1").style.color = "#D4AF37";
+        // document.getElementById("player5").style.color = "#4169e1";
     </script>
     
     <script src="/socket.io/socket.io.js"></script>
