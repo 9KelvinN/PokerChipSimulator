@@ -292,6 +292,11 @@ body {
     top: 30%;
 }
 
+.error {
+    font-family: 'Cinzel';
+    color: red;
+}
+
 #potAmount {
     color: #D4AF37;
     padding: 2px;
