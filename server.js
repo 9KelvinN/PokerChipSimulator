@@ -55,9 +55,28 @@ io.on('connection', (socket) => {
             io.in('Room:' + roomCode).emit('startGame', (game)); 
         }
         else{
-            socket.emit('notEnoughPlayers')
+            socket.emit('notEnoughPlayers');
         }
-    });   
+    }); 
+
+    socket.on('disconnecting', () => {
+        if(sockets.has(socket)){
+            let user = sockets.get(socket);
+            let game = games.get(user.room);
+            for( var i = 0; i < game.players.length; i++){ 
+                if ( game.players[i].username == user.username) {  
+                    game.players.splice(i, 1); 
+                }
+            }
+            sockets.delete(socket);
+            if(game.players.length == 0){
+                games.delete(user.room);
+            }
+            else{
+                io.in('Room:' + user.room).emit('newPlayerJoined', {players: game.players, numPlayers: game.numPlayers});
+            }
+        }
+    });  
 });
 
 class Player {
