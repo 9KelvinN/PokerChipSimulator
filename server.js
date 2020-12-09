@@ -31,12 +31,16 @@ io.on('connection', (socket) => {
     socket.on('joinGame', (data) => {
         //real invalid code check to be implemented
         if (games.has(data.joinCode)) {
-            socket.join('Room:' + data.joinCode)
-            sockets.set(socket, {username: data.username, room:data.joinCode});
             let game = games.get(data.joinCode)
-            game.players.push(new Player(data.username, game.startingAmount));
-            socket.emit('joinGame', data.joinCode);
-            io.in('Room:' + data.joinCode).emit('newPlayerJoined', {players: game.players, numPlayers: game.numPlayers});
+            if (game.players.length == game.numPlayers){
+                socket.emit('joinGame', -2);
+            } else {
+                socket.join('Room:' + data.joinCode)
+                sockets.set(socket, {username: data.username, room:data.joinCode});
+                game.players.push(new Player(data.username, game.startingAmount));
+                socket.emit('joinGame', data.joinCode);
+                io.in('Room:' + data.joinCode).emit('newPlayerJoined', {players: game.players, numPlayers: game.numPlayers});
+            }
         } else {
             socket.emit('joinGame', -1);
         }
