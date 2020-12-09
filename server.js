@@ -23,9 +23,9 @@ io.on('connection', (socket) => {
         // Adds player to the games player list
         games.get(joinCode).players.push(new Player(data.username, data.startingAmount));
         // To implement feature ensuring different numbers 
-        socket.emit('hostGame', joinCode);
+        socket.emit('hostGame', {joinCode: joinCode, numPlayers: data.numPlayers, username: data.username});
     });
-
+  
     socket.on('joinGame', (data) => {
         //real invalid code check to be implemented
         if (games.has(data.joinCode)) {
@@ -34,17 +34,18 @@ io.on('connection', (socket) => {
             let game = games.get(data.joinCode)
             game.players.push(new Player(data.username, game.startingAmount));
             socket.emit('joinGame', data.joinCode);
+            io.in('Room:' + roomCode).emit('newPlayerJoined', game.players);
         } else {
             socket.emit('joinGame', -1);
         }
     });
-
+  
     socket.on('startGame', () => {
         // TO-DO: ensure all players are connected, and numPlayers matches players map
         let user = sockets.get(socket);
         let roomCode = user.room;
         io.in('Room:' + roomCode).emit('startGame', (games.get(roomCode))); 
-    });
+    });   
 });
 
 class Player {

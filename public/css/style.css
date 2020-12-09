@@ -143,6 +143,12 @@ body {
     font-family: 'Cinzel';
 }
 
+#joinedNumber {
+    font-size: 150%;
+    color: white;
+    font-family: 'Cinzel';
+}
+
 #tableTop {
     display: block;
     margin-left: auto;
