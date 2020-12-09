@@ -68,8 +68,6 @@ hostSubmitButton.addEventListener('click', () => {
 
 socket.on('hostGame', (data) => {
     document.getElementById('joinCodeNumber').innerHTML = data.joinCode;
-    document.getElementById('joinedNumber').innerHTML = "1/" + data.numPlayers +" players are in this room:";
-    document.getElementById('joinedPlayers').innerHTML = data.username;
     presentScreen(waitingScreen);
 });
 
@@ -95,8 +93,14 @@ socket.on('joinGame', (joinCode) => {
     }
 }); 
 
-socket.on('newPlayerJoined', (players) => {
-    
+socket.on('newPlayerJoined', (data) => {
+    document.getElementById('joinedNumber').innerHTML = data.players.length + "/" + data.numPlayers +" players are in this room:";
+    let usernameList = "";
+    for (player in data.players){
+        usernameList += player.username + "<br>";
+    }
+    console.log(data.players);
+    document.getElementById('joinedPlayers').innerHTML = usernameList;
 });
 
 startButton.addEventListener('click', () => {

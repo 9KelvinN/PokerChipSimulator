@@ -18,12 +18,14 @@ io.on('connection', (socket) => {
         //Generate random number from 0000 - 9999
         var joinCode = (Math.floor(Math.random() * 10000) + 10000).toString().substring(1);
         socket.join('Room:' + joinCode)
-        games.set(joinCode, new Game(data.numPlayers, data.startingAmount, data.ante));
+        let game = new Game(data.numPlayers, data.startingAmount, data.ante);
+        games.set(joinCode, game);
         sockets.set(socket, {username: data.username, room: joinCode});
         // Adds player to the games player list
-        games.get(joinCode).players.push(new Player(data.username, data.startingAmount));
+        game.players.push(new Player(data.username, data.startingAmount));
         // To implement feature ensuring different numbers 
-        socket.emit('hostGame', {joinCode: joinCode, numPlayers: data.numPlayers, username: data.username});
+        socket.emit('hostGame', {joinCode: joinCode});
+        io.in('Room:' + joinCode).emit('newPlayerJoined', {players: game.players, numPlayers: data.numPlayers});
     });
   
     socket.on('joinGame', (data) => {
@@ -34,7 +36,7 @@ io.on('connection', (socket) => {
             let game = games.get(data.joinCode)
             game.players.push(new Player(data.username, game.startingAmount));
             socket.emit('joinGame', data.joinCode);
-            io.in('Room:' + roomCode).emit('newPlayerJoined', game.players);
+            io.in('Room:' + data.joinCode).emit('newPlayerJoined', {players: game.players, numPlayers: game.numPlayers});
         } else {
             socket.emit('joinGame', -1);
         }
