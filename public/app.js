@@ -55,7 +55,7 @@ hostSubmitButton.addEventListener('click', () => {
 
 socket.on('hostGame', (data) => {
     document.getElementById('joinCodeNumber').innerHTML = data.joinCode;
-    document.getElementById('joinedNumber').innerHTML = "1/" + data.numPlayers +" players are in this room";
+    document.getElementById('joinedNumber').innerHTML = "1/" + data.numPlayers +" players are in this room:";
     document.getElementById('joinedPlayers').innerHTML = data.username;
     presentScreen(waitingScreen);
 });

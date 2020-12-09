@@ -43,7 +43,7 @@ io.on('connection', (socket) => {
       }
     });
 
-    socket.on('startGame',() =>{
+    socket.on('startGame',(players) =>{
       user = sockets.get(socket);
       roomCode = user.room;
       io.in('Room:' + roomCode).emit('startGame', (games.get(roomCode))); 
