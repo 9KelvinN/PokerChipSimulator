@@ -46,7 +46,13 @@ io.on('connection', (socket) => {
         // TO-DO: ensure all players are connected, and numPlayers matches players map
         let user = sockets.get(socket);
         let roomCode = user.room;
-        io.in('Room:' + roomCode).emit('startGame', (games.get(roomCode))); 
+        let game = games.get(roomCode);
+        if (game.players.length == game.numPlayers){
+            io.in('Room:' + roomCode).emit('startGame', (game)); 
+        }
+        else{
+            socket.emit('notEnoughPlayers')
+        }
     });   
 });
 
