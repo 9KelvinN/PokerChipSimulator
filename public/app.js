@@ -85,7 +85,10 @@ socket.on('joinGame', (joinCode) => {
     if (joinCode == -1){
         //real invalid code msg to be outputted
         let errorString = document.getElementById('joinError').innerHTML;
-        document.getElementById('joinError').innerHTML = errorString + "</br>Invalid code given.";
+        document.getElementById('joinError').innerHTML = "Invalid code given.";
+    }
+    else if (joinCode == -2){
+
     }
     else{
         document.getElementById('joinCodeNumber').innerHTML = joinCode;
@@ -96,8 +99,8 @@ socket.on('joinGame', (joinCode) => {
 socket.on('newPlayerJoined', (data) => {
     document.getElementById('joinedNumber').innerHTML = data.players.length + "/" + data.numPlayers +" players are in this room:";
     let usernameList = "";
-    for (player in data.players){
-        usernameList += player.username + "<br>";
+    for (let player in data.players){
+        usernameList += data.players[player].username + "<br>";
     }
     console.log(data.players);
     document.getElementById('joinedPlayers').innerHTML = usernameList;
@@ -106,6 +109,10 @@ socket.on('newPlayerJoined', (data) => {
 startButton.addEventListener('click', () => {
     socket.emit('startGame')
 })
+
+socket.on('notEnoughPlayers', ()=>{
+    document.getElementById('waitingError').innerHTML = 'There is not enough people in the room to start';
+});
 
 socket.on('startGame', (game) => {
     // gameState holds a Game object with 3, 4, or 5 players; starting amount, ante
