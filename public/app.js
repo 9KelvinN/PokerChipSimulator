@@ -85,10 +85,11 @@ socket.on('joinGame', (joinCode) => {
     if (joinCode == -1){
         //real invalid code msg to be outputted
         let errorString = document.getElementById('joinError').innerHTML;
-        document.getElementById('joinError').innerHTML = "Invalid code given.";
+        document.getElementById('joinError').innerHTML = errorString + "<br>Invalid code entered.";
     }
     else if (joinCode == -2){
-
+        let errorString = document.getElementById('joinError').innerHTML;
+        document.getElementById('joinError').innerHTML = errorString + "<br>The room you are trying to enter is full.";
     }
     else{
         document.getElementById('joinCodeNumber').innerHTML = joinCode;
@@ -111,7 +112,7 @@ startButton.addEventListener('click', () => {
 })
 
 socket.on('notEnoughPlayers', ()=>{
-    document.getElementById('waitingError').innerHTML = 'There is not enough people in the room to start';
+    document.getElementById('waitingError').innerHTML = 'There is not enough people in the room to start.';
 });
 
 socket.on('startGame', (game) => {
