@@ -25,7 +25,7 @@ io.on('connection', (socket) => {
       //Adds player to the games player list
       games.get(joinCode).players.set(data.username, new Player(data.startingAmount));
       // To implement feature ensuring different numbers 
-      socket.emit('hostGame', joinCode);
+      socket.emit('hostGame', {joinCode: joinCode, numPlayers: data.numPlayers, username: data.username});
     });
 
     socket.on('joinGame', (data) =>{
@@ -36,6 +36,7 @@ io.on('connection', (socket) => {
         game = games.get(data.joinCode)
         game.players.set(data.username, new Player(game.startingAmount));
         socket.emit('joinGame', data.joinCode);
+        io.in('Room:' + roomCode).emit('newPlayerJoined', game.players);
       } 
       else {
         socket.emit('joinGame', -1);
@@ -47,6 +48,7 @@ io.on('connection', (socket) => {
       roomCode = user.room;
       io.in('Room:' + roomCode).emit('startGame', (games.get(roomCode))); 
     });
+    
 });
 
 class Player {
