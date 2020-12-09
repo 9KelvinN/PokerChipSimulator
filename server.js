@@ -1,5 +1,3 @@
-// Everything server-side goes in here
-
 const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
@@ -17,56 +15,56 @@ let sockets = new Map();
 io.on('connection', (socket) => {
 
     socket.on('hostGame', (data) => {
-      //Generate random number from 0000 - 9999
-      var joinCode = (Math.floor(Math.random() * 10000) + 10000).toString().substring(1);
-      socket.join('Room:' + joinCode)
-      games.set(joinCode, new Game(data.numPlayers,data.startingAmount, data.smallBlind));
-      sockets.set(socket, {username: data.username, room:joinCode});
-      //Adds player to the games player list
-      games.get(joinCode).players.set(data.username, new Player(data.startingAmount));
-      // To implement feature ensuring different numbers 
-      socket.emit('hostGame', {joinCode: joinCode, numPlayers: data.numPlayers, username: data.username});
+        //Generate random number from 0000 - 9999
+        var joinCode = (Math.floor(Math.random() * 10000) + 10000).toString().substring(1);
+        socket.join('Room:' + joinCode)
+        games.set(joinCode, new Game(data.numPlayers, data.startingAmount, data.ante));
+        sockets.set(socket, {username: data.username, room: joinCode});
+        // Adds player to the games player list
+        games.get(joinCode).players.push(new Player(data.username, data.startingAmount));
+        // To implement feature ensuring different numbers 
+        socket.emit('hostGame', {joinCode: joinCode, numPlayers: data.numPlayers, username: data.username});
     });
-
-    socket.on('joinGame', (data) =>{
-      //real invalid code check to be implemented
-      if (games.has(data.joinCode)){
-        socket.join('Room:' + data.joinCode)
-        sockets.set(socket, {username: data.username, room:data.joinCode});
-        game = games.get(data.joinCode)
-        game.players.set(data.username, new Player(game.startingAmount));
-        socket.emit('joinGame', data.joinCode);
-        io.in('Room:' + roomCode).emit('newPlayerJoined', game.players);
-      } 
-      else {
-        socket.emit('joinGame', -1);
-      }
+  
+    socket.on('joinGame', (data) => {
+        //real invalid code check to be implemented
+        if (games.has(data.joinCode)) {
+            socket.join('Room:' + data.joinCode)
+            sockets.set(socket, {username: data.username, room:data.joinCode});
+            let game = games.get(data.joinCode)
+            game.players.push(new Player(data.username, game.startingAmount));
+            socket.emit('joinGame', data.joinCode);
+            io.in('Room:' + roomCode).emit('newPlayerJoined', game.players);
+        } else {
+            socket.emit('joinGame', -1);
+        }
     });
-
-    socket.on('startGame',(players) =>{
-      user = sockets.get(socket);
-      roomCode = user.room;
-      io.in('Room:' + roomCode).emit('startGame', (games.get(roomCode))); 
-    });
-    
+  
+    socket.on('startGame', () => {
+        // TO-DO: ensure all players are connected, and numPlayers matches players map
+        let user = sockets.get(socket);
+        let roomCode = user.room;
+        io.in('Room:' + roomCode).emit('startGame', (games.get(roomCode))); 
+    });   
 });
 
 class Player {
-  constructor(balance) {
-      this.balance = balance;
-      this.actionState = null;
-      this.bet = null;
-  }
+    constructor(username, balance) {
+        this.username = username;
+        this.balance = balance;
+        this.actionState = null;
+        this.bet = null;
+    }
 }
 
 class Game {
-  constructor( numPlayers, startingAmount, blind) {
-      this.numPlayers = numPlayers;
-      this.players = new Map();
-      this.startingAmount = startingAmount;
-      this.blind = blind;
-  }
+    constructor(numPlayers, startingAmount, ante) {
+        this.numPlayers = numPlayers;
+        this.players = [];
+        this.startingAmount = startingAmount;
+        this.ante = ante;
+    }
 }
 server.listen(port, () => {
-  console.log('listening on *:' + port);
+    console.log('listening on *:' + port);
 });

@@ -1,6 +1,3 @@
-// Everything client-side goes in here
-
-
 let socket = io();
 
 const menuScreen = document.querySelector('.menu-screen');
@@ -17,6 +14,14 @@ const waitingScreen = document.querySelector('.waiting-screen');
 let startButton = document.getElementById('startButton');
 
 const tableScreen = document.querySelector('.table-screen');
+let player1 = document.getElementById('player1');
+let player2 = document.getElementById('player2');
+let player3 = document.getElementById('player3');
+let player4 = document.getElementById('player4');
+let player5 = document.getElementById('player5');
+let raise = document.getElementById('raise');
+let call = document.getElementById('call');
+let fold = document.getElementById('fold');
 
 let screens = [menuScreen, hostScreen, joinScreen, waitingScreen, tableScreen];
 
@@ -35,22 +40,30 @@ joinButton.addEventListener('click', () => {
 
 hostSubmitButton.addEventListener('click', () => {
     let username = document.getElementById('hostUsername').value;
-    let numPlayers = document.getElementById('numPlayers').value;
-    let startingAmount = document.getElementById('startingAmount').value;
-    let smallBlind = document.getElementById('smallBlind').value;
-    if (username == "") {
-        // invalid name
+    let numPlayers = Number.parseInt(document.getElementById('numPlayers').value);
+    let startingAmount = Number.parseInt(document.getElementById('startingAmount').value);
+    let ante = Number.parseInt(document.getElementById('ante').value);
+    var errorString = '';
+    if (username == '') {
+        errorString += 'Please enter a player name.<br/>';
     }
     if (numPlayers < 3 || numPlayers > 5) {
-        // number of players must be between 3 and 5
+        errorString += 'The number of players should be between 3 and 5.<br/>';
     }
-    if (startingAmount < 0) {
-        // invalid starting amount
+    if (isNaN(startingAmount) || startingAmount < 0) {
+        errorString += 'The starting amount should be more than $0.<br/>';
     }
-    if (smallBlind > startingAmount) {
-        // invalid small blind
+    if (isNaN(ante) || ante < 0) {
+        errorString += 'The ante should be more than $0.<br/>';
+    } else if (ante > startingAmount) {
+        errorString += 'The ante should be a value less than the starting amount.<br/>';
     }
-    socket.emit('hostGame', {username: username, numPlayers: numPlayers, startingAmount:startingAmount, smallBlind: smallBlind});
+
+    if (errorString) {
+        document.getElementById('hostError').innerHTML = errorString;
+    } else {
+        socket.emit('hostGame', {username: username, numPlayers: numPlayers, startingAmount: startingAmount, ante: ante});
+    }
 })
 
 socket.on('hostGame', (data) => {
@@ -63,8 +76,8 @@ socket.on('hostGame', (data) => {
 joinSubmitButton.addEventListener('click', () => {
     let username = document.getElementById('joinUsername').value;
     let joinCode = document.getElementById('joinCode').value;
-    if (username == "") {
-        // invalid name
+    if (username == '') {
+        document.getElementById('joinError').innerHTML = "Please enter a player name.";
     }
     socket.emit('joinGame', {username: username, joinCode: joinCode});
     //nonexistant room exception to be implemented
@@ -73,7 +86,8 @@ joinSubmitButton.addEventListener('click', () => {
 socket.on('joinGame', (joinCode) => {
     if (joinCode == -1){
         //real invalid code msg to be outputted
-        document.getElementById('joinCode').value = 'Invalid code';
+        let errorString = document.getElementById('joinError').innerHTML;
+        document.getElementById('joinError').innerHTML = errorString + "</br>Invalid code given.";
     }
     else{
         document.getElementById('joinCodeNumber').innerHTML = joinCode;
@@ -89,20 +103,23 @@ startButton.addEventListener('click', () => {
     socket.emit('startGame')
 })
 
-socket.on('startGame', (gameState) => {
+socket.on('startGame', (game) => {
+    // gameState holds a Game object with 3, 4, or 5 players; starting amount, ante
+    // ASSUMES that the lobby has exactly the right number of players
+    let seats = null;
+    if (game.numPlayers == 3) { // visual configuration: bottom player, top left, top right
+        seats = [player1, player3, player4];
+    } else if (game.numPlayers == 4) { // visual configuration: top left, top right, bottom left, bottom right
+        seats = [player2, player3, player4, player5];
+    } else if (game.numPlayers == 5) { // visual configuration: all places
+        seats = [player1, player2, player3, player4, player5];
+    }
+
+    // TO-DO: assign players to seats
+    for (let player in game.players) {
+        
+    }
     presentScreen(tableScreen);
-}); 
-
-
-socket.on('joinGame', (joinCode) => {
-    if (joinCode == -1){
-        //real invalid code msg to be outputted
-        document.getElementById('joinCode').value = 'Invalid code';
-    }
-    else{
-        document.getElementById('joinCodeNumber').innerHTML = joinCode;
-        presentScreen(waitingScreen);
-    }
 }); 
 
 function presentScreen(screen) {
