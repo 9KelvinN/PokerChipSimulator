@@ -14,16 +14,10 @@ const waitingScreen = document.querySelector('.waiting-screen');
 let startButton = document.getElementById('startButton');
 
 const tableScreen = document.querySelector('.table-screen');
-let player1 = document.getElementById('player1');
-let player2 = document.getElementById('player2');
-let player3 = document.getElementById('player3');
-let player4 = document.getElementById('player4');
-let player5 = document.getElementById('player5');
-let raise = document.getElementById('raise');
-let call = document.getElementById('call');
-let fold = document.getElementById('fold');
+let playTurn = document.getElementById('playTurn');
 
 let screens = [menuScreen, hostScreen, joinScreen, waitingScreen, tableScreen];
+let seats = [];
 
 function init() {
     presentScreen(menuScreen);
@@ -32,11 +26,11 @@ function init() {
 hostButton.addEventListener('click', () => {
     presentScreen(hostScreen);
 
-})
+});
 
 joinButton.addEventListener('click', () => {
     presentScreen(joinScreen);
-})
+});
 
 hostSubmitButton.addEventListener('click', () => {
     let username = document.getElementById('hostUsername').value;
@@ -64,7 +58,7 @@ hostSubmitButton.addEventListener('click', () => {
     } else {
         socket.emit('hostGame', {username: username, numPlayers: numPlayers, startingAmount: startingAmount, ante: ante});
     }
-})
+});
 
 socket.on('hostGame', (data) => {
     document.getElementById('joinCodeNumber').innerHTML = data.joinCode;
@@ -79,7 +73,7 @@ joinSubmitButton.addEventListener('click', () => {
     }
     socket.emit('joinGame', {username: username, joinCode: joinCode});
     //nonexistant room exception to be implemented
-})
+});
 
 socket.on('joinGame', (joinCode) => {
     if (joinCode == -1){
@@ -108,7 +102,7 @@ socket.on('newPlayerJoined', (data) => {
 
 startButton.addEventListener('click', () => {
     socket.emit('startGame')
-})
+});
 
 socket.on('notEnoughPlayers', ()=>{
     document.getElementById('waitingError').innerHTML = 'There is not enough people in the room to start';
@@ -117,21 +111,72 @@ socket.on('notEnoughPlayers', ()=>{
 socket.on('startGame', (game) => {
     // gameState holds a Game object with 3, 4, or 5 players; starting amount, ante
     // ASSUMES that the lobby has exactly the right number of players
-    let seats = null;
-    if (game.numPlayers == 3) { // visual configuration: bottom player, top left, top right
-        seats = [player1, player3, player4];
-    } else if (game.numPlayers == 4) { // visual configuration: top left, top right, bottom left, bottom right
-        seats = [player2, player3, player4, player5];
-    } else if (game.numPlayers == 5) { // visual configuration: all places
-        seats = [player1, player2, player3, player4, player5];
+    if (game.players.length == game.numPlayers) {
+        let player1 = document.getElementById('player1');
+        let player2 = document.getElementById('player2');
+        let player3 = document.getElementById('player3');
+        let player4 = document.getElementById('player4');
+        let player5 = document.getElementById('player5');
+        if (game.numPlayers == 3) { // visual configuration: bottom player, top left, top right
+            seats.push(player1, player3, player4);
+            player2.style.display = 'none';
+            player5.style.display = 'none';
+        } else if (game.numPlayers == 4) { // visual configuration: top left, top right, bottom left, bottom right
+            seats.push(player2, player3, player4, player5);
+            player1.style.display = 'none';
+        } else if (game.numPlayers == 5) { // visual configuration: all places
+            seats.push(player1, player2, player3, player4, player5);
+        }
+    
+        makeTable(game);
+        presentScreen(tableScreen);
     }
-
-    // TO-DO: assign players to seats
-    for (let player in game.players) {
-        
-    }
-    presentScreen(tableScreen);
 }); 
+
+
+socket.on('joinGame', (joinCode) => {
+    if (joinCode == -1){
+        //real invalid code msg to be outputted
+        document.getElementById('joinError').innerHTML = "Invalid code given.";
+    }
+    else{
+        document.getElementById('joinCodeNumber').innerHTML = joinCode;
+        presentScreen(waitingScreen);
+    }
+}); 
+
+// makes table for the first time
+function makeTable(gameState) {
+    for (let i = 0; i < seats.length; i++) {
+        console.log(seats.length);
+        let seat = seats[i];
+        let player = gameState.players[i];
+        console.log("Player:");
+        console.log(player);
+        seat.querySelector('.dynamicText').innerHTML = player.username + " - " + player.actionState;
+        seat.querySelector('.dollar').innerHTML = "$" + player.balance;
+    }
+    document.getElementById('yourTurn').style.display = 'none';
+    document.getElementById('potAmount').innerHTML = "$" + gameState.pot;
+    document.getElementById('miscInfo').innerHTML = "Round: " + gameState.round + "</br>Dealer Index: " + gameState.dealerIndex + "</br>Turn: " + gameState.turn + "</br>callAmount: " + gameState.callAmount + "</br>betIndex: " + gameState.betIndex;
+}
+
+socket.on('updateTable', (game) => {
+    makeTable(game);
+});
+
+socket.on('yourTurn', (data) => {
+    document.getElementById('betSlider').min = data.callAmount;
+    document.getElementById('betSlider').max = data.balance;
+    fadeIn(document.getElementById('yourTurn'));
+    console.log('your turn!');
+});
+
+playTurn.addEventListener('click', () => {
+    let actionState = document.querySelector('input[name="turn"]:checked').value;
+    let bet = document.getElementById('betSlider').value;
+    socket.emit('playTurn', {actionState: actionState, bet: bet});
+});
 
 function presentScreen(screen) {
     for (let i = 0; i < screens.length; i++) {
