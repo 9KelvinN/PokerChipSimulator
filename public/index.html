@@ -38,7 +38,7 @@
                             <input class="inputCenter" type="text" id="hostUsername" name="username"><br>
     
                             <h1 class="prompt"><b>NUMBER OF PLAYERS:</b></h1>
-                            <input class="inputCenter" type="number" min="3" max="5" id="numPlayers" name="numPlayers" value="5"><br>
+                            <input class="inputCenter" type="number" min="3" max="5" id="numPlayers" name="numPlayers" value="3"><br>
     
                             <h1 class="prompt"><b>STARTING AMOUNT:</b></h1>
                             <input class="inputCenter" type="number" min="0" step="50" id="startingAmount" name="startingAmount" value="500"><br>
@@ -119,6 +119,8 @@
         </div>
 
         <div id="pot" class="text">POT<h4 class="dynamicText" id="potAmount">$5000</h4></div>
+
+        <p id="miscInfo"></p>
         
         <div id="bet" class="text">
             <form id="yourTurn">
@@ -132,7 +134,7 @@
                 <label for="fold">FOLD</label>
 
                 <p id="betLabel">BET:</p>
-                <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+                <input type="range" min="1" max="100" value="50" class="slider" id="betSlider">
                 <p>$<span id="demo"></span></p>
 
                 <input onClick="" type="button" value="PLAY" id="playTurn">

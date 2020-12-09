@@ -53,11 +53,80 @@ io.on('connection', (socket) => {
         let game = games.get(roomCode);
         if (game.players.length == game.numPlayers){
             io.in('Room:' + roomCode).emit('startGame', (game)); 
+            // need to emit to the first dealer that it is their turn
+            sendTurn(game.players[0], game);
         }
         else{
             socket.emit('notEnoughPlayers');
         }
-    }); 
+    });
+
+    // asdfasdfdasfasdf
+
+    // what if all players fold?
+
+
+
+    // this is the one
+    socket.on('playTurn', (data) => { // data contains actionState and bet
+        let user = sockets.get(socket);
+        let roomCode = user.room;
+        let game = games.get(roomCode);
+        
+        /*
+        // this line is flawed
+        let currentPlayer = game.nextTurn();
+        // blinds
+        if (game.turn == 1 && game.round == 0) {
+            game.pot += (game.callAmount * 1.5);
+            currentPlayer.call(game.callAmount / 2);
+            currentPlayer = game.nextTurn();
+            currentPlayer.call(game.callAmount);
+        }
+        */
+
+        let currentPlayer = game.players[game.turnIndex];
+        console.log(currentPlayer.username + " played " + data.actionState);
+
+        currentPlayer.actionState = data.actionState;
+
+        if (data.actionState == 'fold') {
+            // do nothing
+        }
+
+        if (data.actionState == 'call') {
+            currentPlayer.call(game.callAmount);
+            game.pot += game.callAmount;
+        }
+
+        if (data.actionState == 'raise') {
+            currentPlayer.call(data.bet);
+            game.pot += data.bet;
+            game.callAmount = data.bet;
+            game.betIndex = (game.betIndex + game.turn) % game.numPlayers;
+            game.turn = 0;
+        }
+        
+        do {
+            currentPlayer = game.nextTurn(); // we are looking at the next player
+            if (game.turn >= game.numPlayers) { // indicates that the round has played all players
+                game.nextRound();
+            }
+            if (game.round >= 4) { // indicates that the game has played all four rounds
+                // store money to award to the winner
+                game.nextDealer(); // handles making all players' action states 'null'
+                currentPlayer = game.players[game.turnIndex];
+            }
+        // keep looping until the current player is not folded or until the current hand is over
+        } while (currentPlayer.actionState == 'fold');
+
+        // emit update to all players
+        io.in('Room:' + roomCode).emit('updateTable', (game));
+        
+        // emit turn to specific player that is next
+        sendTurn(currentPlayer, game);
+
+    });
 
     socket.on('disconnecting', () => {
         if(sockets.has(socket)){
@@ -79,12 +148,31 @@ io.on('connection', (socket) => {
     });  
 });
 
+function sendTurn(player, game) {
+    for (const sock of sockets.keys()) {
+        if (sockets.get(sock).username == player.username) {
+            sock.emit('yourTurn', {callAmount: game.callAmount, balance: player.balance});
+            console.log('it is ' + player.username + '\'s turn');
+            break;
+        }
+    }
+}
+
 class Player {
     constructor(username, balance) {
         this.username = username;
         this.balance = balance;
         this.actionState = null;
         this.bet = null;
+    }
+
+    call(amount) {
+        this.balance -= amount;
+    }
+
+    bet() {
+        this.balance -= this.bet;
+        return this.bet;
     }
 }
 
@@ -94,8 +182,49 @@ class Game {
         this.players = [];
         this.startingAmount = startingAmount;
         this.ante = ante;
+
+        // fields for a "hand":
+        this.dealerIndex = 0;
+        this.round = 0; // pre-flop, the flop, the turn, the river
+        this.pot = 0;
+ 
+        // fields for a "round":
+        this.betIndex = 0; // tracks location of highest bet
+        this.turn = 0; // starts with little blind
+        this.callAmount = ante; // this tracks the current betting round's minimum to "check"
+    }
+    
+    get turnIndex() {
+        return (this.dealerIndex + this.betIndex + this.turn) % this.numPlayers;       
+    }
+
+    nextTurn() {
+        this.turn++;
+        return this.players[this.turnIndex];
+    }
+
+    nextRound() {
+        this.betIndex = 0;
+        this.turn = 0;
+        this.callAmount = this.ante;
+        this.round++;
+        for (const player of this.players) {
+            if (player.actionState != 'fold') {
+                player.actionState = null;
+            }
+        }
+    }
+
+    nextDealer() {
+        this.dealerIndex = (this.dealerIndex + 1) % this.numPlayers;
+        this.round = 0;
+        this.pot = 0;
+        for (const player of this.players) {
+            player.actionState = null;
+        }
     }
 }
+
 server.listen(port, () => {
     console.log('listening on *:' + port);
 });
