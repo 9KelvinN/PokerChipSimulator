@@ -31,12 +31,16 @@ io.on('connection', (socket) => {
     socket.on('joinGame', (data) => {
         //real invalid code check to be implemented
         if (games.has(data.joinCode)) {
-            socket.join('Room:' + data.joinCode)
-            sockets.set(socket, {username: data.username, room:data.joinCode});
             let game = games.get(data.joinCode)
-            game.players.push(new Player(data.username, game.startingAmount));
-            socket.emit('joinGame', data.joinCode);
-            io.in('Room:' + data.joinCode).emit('newPlayerJoined', {players: game.players, numPlayers: game.numPlayers});
+            if (game.players.length == game.numPlayers){
+                socket.emit('joinGame', -2);
+            } else {
+                socket.join('Room:' + data.joinCode)
+                sockets.set(socket, {username: data.username, room:data.joinCode});
+                game.players.push(new Player(data.username, game.startingAmount));
+                socket.emit('joinGame', data.joinCode);
+                io.in('Room:' + data.joinCode).emit('newPlayerJoined', {players: game.players, numPlayers: game.numPlayers});
+            }
         } else {
             socket.emit('joinGame', -1);
         }
@@ -53,7 +57,7 @@ io.on('connection', (socket) => {
             sendTurn(game.players[0], game);
         }
         else{
-            socket.emit('notEnoughPlayers')
+            socket.emit('notEnoughPlayers');
         }
     });
 
@@ -124,33 +128,24 @@ io.on('connection', (socket) => {
 
     });
 
-    // this is probably messed up in some way, will fix
-    socket.on('dddds', (data) => { // this can emit to the next player's turn and make everyone else's disappear
-        // TO-DO: make the game work
-        let user = sockets.get(socket);
-        let roomCode = user.room;
-        let game = games.get(roomCode);
-        let turn = game.turn; // game turn use modulo to figure out whose turn it is, skip or not
-        let index = turn % game.players.length;
-        let currentPlayer = game.players[index];
-        if (currentPlayer.username == user.username) { // matching usernames, for now; good player
-            // this player can go
-            currentPlayer.actionState = data.actionState;
-            if (data.actionState == "call") {
-                // remove current bet amount
-                currentPlayer.balance -= game.callAmount;
-                game.pot += callAmount;
+    socket.on('disconnecting', () => {
+        if(sockets.has(socket)){
+            let user = sockets.get(socket);
+            let game = games.get(user.room);
+            for( var i = 0; i < game.players.length; i++){ 
+                if ( game.players[i].username == user.username) {  
+                    game.players.splice(i, 1); 
+                }
             }
-            if (data.actionState == "raise") {
-                currentPlayer.balance -= data.bet;
-                game.pot += data.bet;
-                game.callAmount = data.bet;
+            sockets.delete(socket);
+            if(game.players.length == 0){
+                games.delete(user.room);
             }
-            game.turn++;
-
-            socket.emit('playTurn', {currentPlayer: currentPlayer, index: index, pot: game.pot, callAmount: game.callAmount});
+            else{
+                io.in('Room:' + user.room).emit('newPlayerJoined', {players: game.players, numPlayers: game.numPlayers});
+            }
         }
-    });
+    });  
 });
 
 function sendTurn(player, game) {
