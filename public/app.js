@@ -177,14 +177,16 @@ function makeTable(gameState) {
 
 function updatePlayerSeat(player, index) {
     let seat = seats[index];
-    seat.querySelector('.nameLabel').innerHTML = player.username;
+    let nameLabel = seat.querySelector('.nameLabel');
+    nameLabel.innerHTML = player.username;
     seat.querySelector('.balanceLabel').innerHTML = "$" + player.balance;
-    let actionStateLabel = seat.querySelector('.actionStateLabel');
-    actionStateLabel.innerHTML = player.actionState;
+    seat.querySelector('.actionStateLabel').innerHTML = player.actionState;
     if (player.actionState == 'big blind') {
-        actionStateLabel.style.color = '#D4AF37';
+        nameLabel.style.color = '#D4AF37';
     } else if (player.actionState == 'small blind') {
-        actionStateLabel.style.color = '#03DBFC';
+        nameLabel.style.color = '#03DBFC';
+    } else {
+        nameLabel.style.color = 'white';
     }
 }
 
