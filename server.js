@@ -116,27 +116,36 @@ io.on('connection', (socket) => {
             }
             if (game.round >= 4) { // indicates that the game has played all four rounds
                 // store money to award to the winner
-                sendChooseWinner(game.players[game.dealerIndex], game.pot);
-                game.nextDealer(); // handles making all players' action states 'null'
-                // handle blinds
-                game.blinds();
-                currentPlayer = game.players[game.turnIndex];
+                sendChooseWinnerAll(roomCode);
+                return;
             }
-        // keep looping until the current player is not folded or until the current hand is over
+            // keep looping until the current player is not folded or until the current hand is over
         } while (currentPlayer.actionState == 'fold');
-
+        
         // emit update to all players
         io.in('Room:' + roomCode).emit('updateTable', (game));
         
         // emit turn to specific player that is next
         sendTurn(currentPlayer, game);
-
+        
     });
-
+    
     socket.on('winner', (data) => {
         let user = sockets.get(socket);
         let game = games.get(user.room);
-        game.players[data.index].balance += data.pot;
+        game.players[data.index].balance += game.pot;
+
+
+        game.nextDealer(); // handles making all players' action states 'null'
+        // handle blinds
+        game.blinds();
+        let currentPlayer = game.players[game.turnIndex];
+        
+        // emit update to all players
+        io.in('Room:' + user.room).emit('updateTable', (game));
+        
+        // emit turn to specific player that is next
+        sendTurn(currentPlayer, game);
     });
 
     socket.on('disconnecting', () => {
@@ -169,13 +178,17 @@ function sendTurn(player, game) {
     }
 }
 
-function sendChooseWinner(dealer, pot) {
+function sendChooseWinner(dealer) {
     for (const sock of sockets.keys()) {
         if (sockets.get(sock).username == dealer.username) {
-            sock.emit('chooseWinner', {pot: pot});
+            sock.emit('chooseWinner', {});
             break;
         }
     }
+}
+
+function sendChooseWinnerAll(roomCode) {
+    io.in('Room:' + roomCode).emit('chooseWinner', {});
 }
 
 class Player {
