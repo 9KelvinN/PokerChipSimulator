@@ -98,29 +98,69 @@
     <div class="table-screen" id="boardSide">
         <img src="images/tableVertical.png" class="player" id="table" alt="" />
 
-        <div id="player1" class="playerName"><h4 class="dynamicText">Player 1</h4><h1 class="dollar" id="bottomDollar">$5000</h1>
-            <img src="images/PlayerCard.png" class="player" id="player1C" alt="" />
+        <div id="player1" class="playerName">
+            <div class="container-fluid">
+                <h4 class="dynamicText nameLabel">Player 1</h4>
+                <h6 class="actionStateLabel">Action State</h6>
+            </div>
+            <div class="parent">
+                <img src="images/PlayerCard.png" class="player child" id="player1C" alt="" />
+                <h1 class="dollar balanceLabel child">Balance</h1>
+            </div>
         </div>
 
-        <div id="player2" class="playerName"><h4 class="dynamicText">Player 2</h4><h1 class="dollar">$5000</h1>
-            <img src="images/PlayerCard.png" class="player" id="player2C" alt="" />
+        <div id="player2" class="playerName">
+            <div class="container-fluid">
+                <h4 class="dynamicText nameLabel">Player 2</h4>
+                <h6 class="actionStateLabel">Action State</h6>
+            </div>
+            <div class="parent">
+                <img src="images/PlayerCard.png" class="player child" id="player2C" alt="" />
+                <h1 class="dollar balanceLabel child">Balance</h1>
+            </div>
         </div>
 
-        <div id="player3" class="playerName"><h4 class="dynamicText">Player 3</h4><h1 class="dollar">$5000</h1>
-            <img src="images/PlayerCard.png" class="player" id="player3C" alt="" />
+        <div id="player3" class="playerName">
+            <div class="container-fluid">
+                <h4 class="dynamicText nameLabel">Player 3</h4>
+                <h6 class="actionStateLabel">Action State</h6>
+            </div>
+            <div class="parent">
+                <img src="images/PlayerCard.png" class="player child" id="player3C" alt="" />
+                <h1 class="dollar balanceLabel child">Balance</h1>
+            </div>
         </div>
 
-        <div id="player4" class="playerName"><h4 class="dynamicText">Player 4</h4><h1 class="dollar">$5000</h1>
-            <img src="images/PlayerCard.png" class="player" id="player4C" alt="" />
+        <div id="player4" class="playerName">
+            <div class="container-fluid">
+                <h4 class="dynamicText nameLabel">Player 4</h4>
+                <h6 class="actionStateLabel">Action State</h6>
+            </div>
+            <div class="parent">
+                <img src="images/PlayerCard.png" class="player child" id="player4C" alt="" />
+                <h1 class="dollar balanceLabel child">Balance</h1>
+            </div>
         </div>
 
-        <div id="player5" class="playerName"><h4 class="dynamicText">Player 5</h4><h1 class="dollar">$5000</h1>
-            <img src="images/PlayerCard.png" class="player" id="player5C" alt="" />
+        <div id="player5" class="playerName">
+            <div class="container-fluid">
+                <h4 class="dynamicText nameLabel">Player 5</h4>
+                <h6 class="actionStateLabel">Action State</h6>
+            </div>
+            <div class="parent">
+                <img src="images/PlayerCard.png" class="player child" id="player5C" alt="" />
+                <h1 class="dollar balanceLabel child">Balance</h1>
+            </div>
         </div>
 
-        <div id="pot" class="text">POT<h4 class="dynamicText" id="potAmount">$5000</h4></div>
-
-        <p id="miscInfo"></p>
+        <div id="pot" class="text">
+            <h5 id="bettingRound">Betting Round</h5>POT
+            <ul id="inline">
+                <h5 id="callAmount">Call</h5>
+                <h5 id="callAmount2">Amount</h5>
+            </ul>
+            <h4 class="dynamicText" id="potAmount">Pot</h4>
+        </div>
         
         <div id="bet" class="text">
             <form id="yourTurn">
@@ -139,21 +179,9 @@
 
                 <input onClick="" type="button" value="PLAY" id="playTurn">
             </form>
+            <h4 id="miscInfo"></h4>
         </div>
     </div>
-    <script>
-        var slider = document.getElementById("betSlider");
-        var output = document.getElementById("demo");
-        output.innerHTML = slider.value; // Display the default slider value
-
-        // Update the current slider value (each time you drag the slider handle)
-        slider.oninput = function() {
-            output.innerHTML = this.value;
-        }
-
-        // document.getElementById("player1").style.color = "#D4AF37";
-        // document.getElementById("player5").style.color = "#4169e1";
-    </script>
     
     <script src="/socket.io/socket.io.js"></script>
     <script src="app.js" charset="utf-8"></script>

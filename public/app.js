@@ -16,6 +16,15 @@ let startButton = document.getElementById('startButton');
 const tableScreen = document.querySelector('.table-screen');
 let playTurn = document.getElementById('playTurn');
 
+var slider = document.getElementById("betSlider");
+var sliderLabel = document.getElementById("demo");
+sliderLabel.innerHTML = slider.value; // Display the default slider value
+
+// Update the current slider value (each time you drag the slider handle)
+slider.oninput = function() {
+    sliderLabel.innerHTML = this.value;
+}
+
 let screens = [menuScreen, hostScreen, joinScreen, waitingScreen, tableScreen];
 let seats = [];
 
@@ -148,18 +157,45 @@ socket.on('joinGame', (joinCode) => {
 
 // makes table for the first time
 function makeTable(gameState) {
-    for (let i = 0; i < seats.length; i++) {
-        console.log(seats.length);
-        let seat = seats[i];
-        let player = gameState.players[i];
-        console.log("Player:");
-        console.log(player);
-        seat.querySelector('.dynamicText').innerHTML = player.username + " - " + player.actionState;
-        seat.querySelector('.dollar').innerHTML = "$" + player.balance;
+    let players = gameState.players;
+    for (let i = 0; i < players.length; i++) {
+        updatePlayerSeat(players[i], i);
     }
-    document.getElementById('yourTurn').style.display = 'none';
+    document.getElementById('yourTurn').style.visibility = 'hidden';
     document.getElementById('potAmount').innerHTML = "$" + gameState.pot;
-    document.getElementById('miscInfo').innerHTML = "Round: " + gameState.round + "</br>Dealer Index: " + gameState.dealerIndex + "</br>Turn: " + gameState.turn + "</br>callAmount: " + gameState.callAmount + "</br>betIndex: " + gameState.betIndex;
+    let bettingRound = '';
+    switch(gameState.round) {
+        case 0:
+            bettingRound = 'Pre-Flop';
+            break;
+        case 1:
+            bettingRound = 'Flop';
+            break;
+        case 2:
+            bettingRound = 'Turn';
+            break;
+        case 3:
+            bettingRound = 'River';
+            break;
+    }
+    document.getElementById('bettingRound').innerHTML = bettingRound;
+    document.getElementById('callAmount').innerHTML = "Wager: $" + gameState.callAmount;
+    // remove later
+    document.getElementById('miscInfo').innerHTML = "It is currently " + players[(gameState.dealerIndex + gameState.betIndex + gameState.turn + 1) % gameState.numPlayers].username + "\'s turn.</br>The dealer for this hand is " + players[gameState.dealerIndex].username + ".";
+    //document.getElementById('miscInfo').innerHTML = "Round: " + gameState.round + "</br>Dealer Index: " + gameState.dealerIndex + "</br>Turn: " + gameState.turn + "</br>callAmount: " + gameState.callAmount + "</br>betIndex: " + gameState.betIndex;
+}
+
+function updatePlayerSeat(player, index) {
+    let seat = seats[index];
+    seat.querySelector('.nameLabel').innerHTML = player.username;
+    seat.querySelector('.balanceLabel').innerHTML = "$" + player.balance;
+    let actionStateLabel = seat.querySelector('.actionStateLabel');
+    actionStateLabel.innerHTML = player.actionState;
+    if (player.actionState == 'big blind') {
+        actionStateLabel.style.color = '#D4AF37';
+    } else if (player.actionState == 'small blind') {
+        actionStateLabel.style.color = '#03DBFC';
+    }
 }
 
 socket.on('updateTable', (game) => {
@@ -167,10 +203,10 @@ socket.on('updateTable', (game) => {
 });
 
 socket.on('yourTurn', (data) => {
-    let betSlider = document.getElementById('betSlider');
-    betSlider.min = data.callAmount;
-    betSlider.max = data.balance;
-    betSlider.value = data.callAmount;
+    document.getElementById('callAmount2').innerHTML = "($" + (data.callAmount - data.wager) + " more)";
+    slider.min = data.callAmount;
+    slider.max = data.balance;
+    slider.value = data.callAmount;
     fadeIn(document.getElementById('yourTurn'));
     console.log('your turn!');
 });
@@ -178,6 +214,8 @@ socket.on('yourTurn', (data) => {
 playTurn.addEventListener('click', () => {
     let actionState = document.querySelector('input[name="turn"]:checked').value;
     let bet = Number.parseInt(document.getElementById('betSlider').value);
+    document.getElementById('callAmount2').innerHTML = "(You " + actionState.substring(0, 4) + "ed.)";
+    document.getElementById('yourTurn').style.visibility = 'hidden';
     socket.emit('playTurn', {actionState: actionState, bet: bet});
 });
 
@@ -202,6 +240,7 @@ function fadeIn(element) {
         element.style.filter = 'alpha(opacity=' + op * 100 + ")";
         op += op * 0.1;
     }, 10);
+    element.style.visibility = 'visible';
 }
 
 

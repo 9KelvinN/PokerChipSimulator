@@ -155,7 +155,7 @@ io.on('connection', (socket) => {
 function sendTurn(player, game) {
     for (const sock of sockets.keys()) {
         if (sockets.get(sock).username == player.username) {
-            sock.emit('yourTurn', {callAmount: game.callAmount, balance: player.balance});
+            sock.emit('yourTurn', {callAmount: game.callAmount, pot: game.pot, balance: player.balance, wager: player.wager});
             console.log('it is ' + player.username + '\'s turn');
             break;
         }
@@ -166,7 +166,7 @@ class Player {
     constructor(username, balance) {
         this.username = username;
         this.balance = balance;
-        this.actionState = null;
+        this.actionState = '';
         this.wager = 0;
     }
 
@@ -212,7 +212,7 @@ class Game {
         this.round++;
         for (const player of this.players) {
             if (player.actionState != 'fold') {
-                player.actionState = null;
+                player.actionState = '';
                 player.wager = 0;
             }
         }
@@ -223,11 +223,12 @@ class Game {
         this.round = 0;
         this.pot = 0;
         for (const player of this.players) {
-            player.actionState = null;
+            player.actionState = '';
         }
     }
 
     blinds() {
+        this.players[this.dealerIndex].actionState = 'dealer';
         let smallBlind = this.players[(this.dealerIndex + 1) % this.numPlayers];
         this.pot += smallBlind.deduct(this.ante / 2);
         smallBlind.actionState = 'small blind';
