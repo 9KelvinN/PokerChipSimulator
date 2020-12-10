@@ -167,15 +167,17 @@ socket.on('updateTable', (game) => {
 });
 
 socket.on('yourTurn', (data) => {
-    document.getElementById('betSlider').min = data.callAmount;
-    document.getElementById('betSlider').max = data.balance;
+    let betSlider = document.getElementById('betSlider');
+    betSlider.min = data.callAmount;
+    betSlider.max = data.balance;
+    betSlider.value = data.callAmount;
     fadeIn(document.getElementById('yourTurn'));
     console.log('your turn!');
 });
 
 playTurn.addEventListener('click', () => {
     let actionState = document.querySelector('input[name="turn"]:checked').value;
-    let bet = document.getElementById('betSlider').value;
+    let bet = Number.parseInt(document.getElementById('betSlider').value);
     socket.emit('playTurn', {actionState: actionState, bet: bet});
 });
 
