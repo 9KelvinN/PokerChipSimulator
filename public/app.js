@@ -189,6 +189,7 @@ function updatePlayerSeat(player, index) {
 }
 
 socket.on('updateTable', (game) => {
+    chooseWinner = false;
     makeTable(game);
 });
 
@@ -202,7 +203,6 @@ socket.on('yourTurn', (data) => {
 });
 
 socket.on('chooseWinner', () => {
-    console.log('choose');
     chooseWinner = true;
     document.getElementById('yourTurn').style.visibility = 'hidden';
     document.getElementById('miscInfo').innerHTML = "Choose the winner of this round by clicking on their balance.";
