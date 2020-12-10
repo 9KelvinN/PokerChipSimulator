@@ -16,8 +16,20 @@ let startButton = document.getElementById('startButton');
 const tableScreen = document.querySelector('.table-screen');
 let playTurn = document.getElementById('playTurn');
 
+var slider = document.getElementById("betSlider");
+var sliderLabel = document.getElementById("demo");
+sliderLabel.innerHTML = slider.value; // Display the default slider value
+
+// Update the current slider value (each time you drag the slider handle)
+slider.oninput = function() {
+    sliderLabel.innerHTML = this.value;
+}
+
 let screens = [menuScreen, hostScreen, joinScreen, waitingScreen, tableScreen];
 let seats = [];
+
+let dealer = false;
+let tempPot = 0;
 
 function init() {
     presentScreen(menuScreen);
@@ -110,14 +122,12 @@ socket.on('notEnoughPlayers', ()=>{
 });
 
 socket.on('startGame', (game) => {
-    // gameState holds a Game object with 3, 4, or 5 players; starting amount, ante
-    // ASSUMES that the lobby has exactly the right number of players
+    let player1 = document.getElementById('player1');
+    let player2 = document.getElementById('player2');
+    let player3 = document.getElementById('player3');
+    let player4 = document.getElementById('player4');
+    let player5 = document.getElementById('player5');
     if (game.players.length == game.numPlayers) {
-        let player1 = document.getElementById('player1');
-        let player2 = document.getElementById('player2');
-        let player3 = document.getElementById('player3');
-        let player4 = document.getElementById('player4');
-        let player5 = document.getElementById('player5');
         if (game.numPlayers == 3) { // visual configuration: bottom player, top left, top right
             seats.push(player1, player3, player4);
             player2.style.display = 'none';
@@ -128,7 +138,11 @@ socket.on('startGame', (game) => {
         } else if (game.numPlayers == 5) { // visual configuration: all places
             seats.push(player1, player2, player3, player4, player5);
         }
-    
+        
+        for (let seat of seats) {
+            addClickableSeat(seat);
+        }
+
         makeTable(game);
         presentScreen(tableScreen);
     }
@@ -148,18 +162,45 @@ socket.on('joinGame', (joinCode) => {
 
 // makes table for the first time
 function makeTable(gameState) {
-    for (let i = 0; i < seats.length; i++) {
-        console.log(seats.length);
-        let seat = seats[i];
-        let player = gameState.players[i];
-        console.log("Player:");
-        console.log(player);
-        seat.querySelector('.dynamicText').innerHTML = player.username + " - " + player.actionState;
-        seat.querySelector('.dollar').innerHTML = "$" + player.balance;
+    let players = gameState.players;
+    for (let i = 0; i < players.length; i++) {
+        updatePlayerSeat(players[i], i);
     }
-    document.getElementById('yourTurn').style.display = 'none';
+    document.getElementById('yourTurn').style.visibility = 'hidden';
     document.getElementById('potAmount').innerHTML = "$" + gameState.pot;
-    document.getElementById('miscInfo').innerHTML = "Round: " + gameState.round + "</br>Dealer Index: " + gameState.dealerIndex + "</br>Turn: " + gameState.turn + "</br>callAmount: " + gameState.callAmount + "</br>betIndex: " + gameState.betIndex;
+    let bettingRound = '';
+    switch(gameState.round) {
+        case 0:
+            bettingRound = 'Pre-Flop';
+            break;
+        case 1:
+            bettingRound = 'Flop';
+            break;
+        case 2:
+            bettingRound = 'Turn';
+            break;
+        case 3:
+            bettingRound = 'River';
+            break;
+    }
+    document.getElementById('bettingRound').innerHTML = bettingRound;
+    document.getElementById('callAmount').innerHTML = "Wager: $" + gameState.callAmount;
+    // remove later
+    document.getElementById('miscInfo').innerHTML = "It is currently " + players[(gameState.dealerIndex + gameState.betIndex + gameState.turn + 1) % gameState.numPlayers].username + "\'s turn.</br>The dealer for this hand is " + players[gameState.dealerIndex].username + ".";
+    //document.getElementById('miscInfo').innerHTML = "Round: " + gameState.round + "</br>Dealer Index: " + gameState.dealerIndex + "</br>Turn: " + gameState.turn + "</br>callAmount: " + gameState.callAmount + "</br>betIndex: " + gameState.betIndex;
+}
+
+function updatePlayerSeat(player, index) {
+    let seat = seats[index];
+    seat.querySelector('.nameLabel').innerHTML = player.username;
+    seat.querySelector('.balanceLabel').innerHTML = "$" + player.balance;
+    let actionStateLabel = seat.querySelector('.actionStateLabel');
+    actionStateLabel.innerHTML = player.actionState;
+    if (player.actionState == 'big blind') {
+        actionStateLabel.style.color = '#D4AF37';
+    } else if (player.actionState == 'small blind') {
+        actionStateLabel.style.color = '#03DBFC';
+    }
 }
 
 socket.on('updateTable', (game) => {
@@ -167,19 +208,39 @@ socket.on('updateTable', (game) => {
 });
 
 socket.on('yourTurn', (data) => {
-    let betSlider = document.getElementById('betSlider');
-    betSlider.min = data.callAmount;
-    betSlider.max = data.balance;
-    betSlider.value = data.callAmount;
+    document.getElementById('callAmount2').innerHTML = "($" + (data.callAmount - data.wager) + " more)";
+    slider.min = data.callAmount;
+    slider.max = data.balance;
+    slider.value = data.callAmount;
     fadeIn(document.getElementById('yourTurn'));
     console.log('your turn!');
+});
+
+socket.on('chooseWinner', (data) => {
+    tempPot = data.pot;
 });
 
 playTurn.addEventListener('click', () => {
     let actionState = document.querySelector('input[name="turn"]:checked').value;
     let bet = Number.parseInt(document.getElementById('betSlider').value);
+    document.getElementById('callAmount2').innerHTML = "(You " + actionState.substring(0, 4) + "ed.)";
+    document.getElementById('yourTurn').style.visibility = 'hidden';
     socket.emit('playTurn', {actionState: actionState, bet: bet});
 });
+
+function addClickableSeat(element) {
+    element.addEventListener('click', () => {
+        if (tempPot != null) {
+            for (let i = 0; i < seats.length; i++) {
+                if (seats[i] == element) {
+                    socket.emit('winner', {index: i, pot: tempPot});
+                    tempPot = null;
+                    break;
+                }
+            }
+        }
+    });
+}
 
 function presentScreen(screen) {
     for (let i = 0; i < screens.length; i++) {
@@ -202,6 +263,7 @@ function fadeIn(element) {
         element.style.filter = 'alpha(opacity=' + op * 100 + ")";
         op += op * 0.1;
     }, 10);
+    element.style.visibility = 'visible';
 }
 
 

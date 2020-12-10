@@ -55,6 +55,8 @@ io.on('connection', (socket) => {
             game.blinds();
             io.in('Room:' + roomCode).emit('startGame', (game)); 
             // need to emit to the first dealer that it is their turn
+            
+            let currentPlayer = game.players[game.turnIndex];
             sendTurn(game.players[3 % game.numPlayers], game);
         }
         else{
@@ -103,17 +105,18 @@ io.on('connection', (socket) => {
             game.pot += currentPlayer.deduct(data.bet);
             game.callAmount = data.bet;
             game.betIndex = (game.betIndex + game.turn) % game.numPlayers;
-            game.turn = 1;
+            game.turn = 0;
         }
         
         do {
             currentPlayer = game.nextTurn(); // we are looking at the next player
-            if (game.turn > game.numPlayers) { // indicates that the round has played all players
+            if (game.turn >= game.numPlayers) { // indicates that the round has played all players
                 game.nextRound();
-                currentPlayer = game.players[game.dealerIndex + 1];
+                currentPlayer = game.players[(game.dealerIndex + 1) % game.numPlayers];
             }
             if (game.round >= 4) { // indicates that the game has played all four rounds
                 // store money to award to the winner
+                sendChooseWinner(game.players[game.dealerIndex], game.pot);
                 game.nextDealer(); // handles making all players' action states 'null'
                 // handle blinds
                 game.blinds();
@@ -128,6 +131,12 @@ io.on('connection', (socket) => {
         // emit turn to specific player that is next
         sendTurn(currentPlayer, game);
 
+    });
+
+    socket.on('winner', (data) => {
+        let user = sockets.get(socket);
+        let game = games.get(user.room);
+        game.players[data.index].balance += data.pot;
     });
 
     socket.on('disconnecting', () => {
@@ -153,8 +162,17 @@ io.on('connection', (socket) => {
 function sendTurn(player, game) {
     for (const sock of sockets.keys()) {
         if (sockets.get(sock).username == player.username) {
-            sock.emit('yourTurn', {callAmount: game.callAmount, balance: player.balance});
+            sock.emit('yourTurn', {callAmount: game.callAmount, pot: game.pot, balance: player.balance, wager: player.wager});
             console.log('it is ' + player.username + '\'s turn');
+            break;
+        }
+    }
+}
+
+function sendChooseWinner(dealer, pot) {
+    for (const sock of sockets.keys()) {
+        if (sockets.get(sock).username == dealer.username) {
+            sock.emit('chooseWinner', {pot: pot});
             break;
         }
     }
@@ -164,7 +182,7 @@ class Player {
     constructor(username, balance) {
         this.username = username;
         this.balance = balance;
-        this.actionState = null;
+        this.actionState = '';
         this.wager = 0;
     }
 
@@ -190,12 +208,12 @@ class Game {
  
         // fields for a "round":
         this.betIndex = 0; // tracks location of highest bet
-        this.turn = 1; // starts with little blind
+        this.turn = 0; // starts with little blind
         this.callAmount = 0; // this tracks the current betting round's minimum to "check"
     }
     
     get turnIndex() {
-        return (this.dealerIndex + this.betIndex + this.turn) % this.numPlayers;       
+        return (this.dealerIndex + this.betIndex + this.turn + 1) % this.numPlayers;       
     }
 
     nextTurn() {
@@ -205,12 +223,12 @@ class Game {
 
     nextRound() {
         this.betIndex = 0;
-        this.turn = 1;
+        this.turn = 0;
         this.callAmount = 0;
         this.round++;
         for (const player of this.players) {
             if (player.actionState != 'fold') {
-                player.actionState = null;
+                player.actionState = '';
                 player.wager = 0;
             }
         }
@@ -221,20 +239,21 @@ class Game {
         this.round = 0;
         this.pot = 0;
         for (const player of this.players) {
-            player.actionState = null;
+            player.actionState = '';
         }
     }
 
     blinds() {
-        let smallBlind = this.players[this.dealerIndex + 1];
+        this.players[this.dealerIndex].actionState = 'dealer';
+        let smallBlind = this.players[(this.dealerIndex + 1) % this.numPlayers];
         this.pot += smallBlind.deduct(this.ante / 2);
         smallBlind.actionState = 'small blind';
-        let bigBlind = this.players[this.dealerIndex + 2];
+        let bigBlind = this.players[(this.dealerIndex + 2) % this.numPlayers];
         this.pot += bigBlind.deduct(this.ante);
         bigBlind.actionState = 'big blind';
         this.callAmount = this.ante;
         this.betIndex = 2 % this.numPlayers;
-        this.turn = 1;
+        this.turn = 0;
     }
 }
 
