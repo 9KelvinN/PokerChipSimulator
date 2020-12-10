@@ -102,8 +102,8 @@ io.on('connection', (socket) => {
         }
 
         if (data.actionState == 'raise') {
-            game.pot += currentPlayer.deduct(data.bet);
-            game.callAmount = data.bet;
+            game.pot += currentPlayer.deduct(game.callAmount + data.bet);
+            game.callAmount = game.callAmount + data.bet;
             game.betIndex = (game.betIndex + game.turn) % game.numPlayers;
             game.turn = 0;
         }

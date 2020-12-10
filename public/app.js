@@ -82,20 +82,17 @@ joinSubmitButton.addEventListener('click', () => {
     let joinCode = document.getElementById('joinCode').value;
     if (username == '') {
         document.getElementById('joinError').innerHTML = "Please enter a player name.";
+    }else{
+        socket.emit('joinGame', {username: username, joinCode: joinCode});
     }
-    socket.emit('joinGame', {username: username, joinCode: joinCode});
-    //nonexistant room exception to be implemented
 });
 
 socket.on('joinGame', (joinCode) => {
     if (joinCode == -1){
-        //real invalid code msg to be outputted
-        let errorString = document.getElementById('joinError').innerHTML;
-        document.getElementById('joinError').innerHTML = errorString + "<br>Invalid code entered.";
+        document.getElementById('joinError').innerHTML= "<Invalid code entered.";
     }
     else if (joinCode == -2){
-        let errorString = document.getElementById('joinError').innerHTML;
-        document.getElementById('joinError').innerHTML = errorString + "<br>The room you are trying to enter is full.";
+        document.getElementById('joinError').innerHTML= "The room you are trying to enter is full.";
     }
     else{
         document.getElementById('joinCodeNumber').innerHTML = joinCode;
@@ -148,17 +145,6 @@ socket.on('startGame', (game) => {
     }
 }); 
 
-
-socket.on('joinGame', (joinCode) => {
-    if (joinCode == -1){
-        //real invalid code msg to be outputted
-        document.getElementById('joinError').innerHTML = "Invalid code given.";
-    }
-    else{
-        document.getElementById('joinCodeNumber').innerHTML = joinCode;
-        presentScreen(waitingScreen);
-    }
-}); 
 
 // makes table for the first time
 function makeTable(gameState) {
