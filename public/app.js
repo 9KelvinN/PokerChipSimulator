@@ -28,8 +28,7 @@ slider.oninput = function() {
 let screens = [menuScreen, hostScreen, joinScreen, waitingScreen, tableScreen];
 let seats = [];
 
-let dealer = false;
-let tempPot = 0;
+let chooseWinner = false;
 
 function init() {
     presentScreen(menuScreen);
@@ -202,8 +201,11 @@ socket.on('yourTurn', (data) => {
     console.log('your turn!');
 });
 
-socket.on('chooseWinner', (data) => {
-    tempPot = data.pot;
+socket.on('chooseWinner', () => {
+    console.log('choose');
+    chooseWinner = true;
+    document.getElementById('yourTurn').style.visibility = 'hidden';
+    document.getElementById('miscInfo').innerHTML = "Choose the winner of this round by clicking on their balance.";
 });
 
 playTurn.addEventListener('click', () => {
@@ -216,11 +218,10 @@ playTurn.addEventListener('click', () => {
 
 function addClickableSeat(element) {
     element.addEventListener('click', () => {
-        if (tempPot != null) {
+        if (chooseWinner) {
             for (let i = 0; i < seats.length; i++) {
                 if (seats[i] == element) {
-                    socket.emit('winner', {index: i, pot: tempPot});
-                    tempPot = null;
+                    socket.emit('winner', {index: i});
                     break;
                 }
             }
