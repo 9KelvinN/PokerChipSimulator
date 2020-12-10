@@ -116,6 +116,7 @@ io.on('connection', (socket) => {
             }
             if (game.round >= 4) { // indicates that the game has played all four rounds
                 // store money to award to the winner
+                sendChooseWinner(game.players[game.dealerIndex], game.pot);
                 game.nextDealer(); // handles making all players' action states 'null'
                 // handle blinds
                 game.blinds();
@@ -130,6 +131,12 @@ io.on('connection', (socket) => {
         // emit turn to specific player that is next
         sendTurn(currentPlayer, game);
 
+    });
+
+    socket.on('winner', (data) => {
+        let user = sockets.get(socket);
+        let game = games.get(user.room);
+        game.players[data.index].balance += data.pot;
     });
 
     socket.on('disconnecting', () => {
@@ -157,6 +164,15 @@ function sendTurn(player, game) {
         if (sockets.get(sock).username == player.username) {
             sock.emit('yourTurn', {callAmount: game.callAmount, pot: game.pot, balance: player.balance, wager: player.wager});
             console.log('it is ' + player.username + '\'s turn');
+            break;
+        }
+    }
+}
+
+function sendChooseWinner(dealer, pot) {
+    for (const sock of sockets.keys()) {
+        if (sockets.get(sock).username == dealer.username) {
+            sock.emit('chooseWinner', {pot: pot});
             break;
         }
     }

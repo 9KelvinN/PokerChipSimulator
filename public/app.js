@@ -28,6 +28,9 @@ slider.oninput = function() {
 let screens = [menuScreen, hostScreen, joinScreen, waitingScreen, tableScreen];
 let seats = [];
 
+let dealer = false;
+let tempPot = 0;
+
 function init() {
     presentScreen(menuScreen);
 }
@@ -119,14 +122,12 @@ socket.on('notEnoughPlayers', ()=>{
 });
 
 socket.on('startGame', (game) => {
-    // gameState holds a Game object with 3, 4, or 5 players; starting amount, ante
-    // ASSUMES that the lobby has exactly the right number of players
+    let player1 = document.getElementById('player1');
+    let player2 = document.getElementById('player2');
+    let player3 = document.getElementById('player3');
+    let player4 = document.getElementById('player4');
+    let player5 = document.getElementById('player5');
     if (game.players.length == game.numPlayers) {
-        let player1 = document.getElementById('player1');
-        let player2 = document.getElementById('player2');
-        let player3 = document.getElementById('player3');
-        let player4 = document.getElementById('player4');
-        let player5 = document.getElementById('player5');
         if (game.numPlayers == 3) { // visual configuration: bottom player, top left, top right
             seats.push(player1, player3, player4);
             player2.style.display = 'none';
@@ -137,7 +138,11 @@ socket.on('startGame', (game) => {
         } else if (game.numPlayers == 5) { // visual configuration: all places
             seats.push(player1, player2, player3, player4, player5);
         }
-    
+        
+        for (let seat of seats) {
+            addClickableSeat(seat);
+        }
+
         makeTable(game);
         presentScreen(tableScreen);
     }
@@ -211,6 +216,10 @@ socket.on('yourTurn', (data) => {
     console.log('your turn!');
 });
 
+socket.on('chooseWinner', (data) => {
+    tempPot = data.pot;
+});
+
 playTurn.addEventListener('click', () => {
     let actionState = document.querySelector('input[name="turn"]:checked').value;
     let bet = Number.parseInt(document.getElementById('betSlider').value);
@@ -218,6 +227,20 @@ playTurn.addEventListener('click', () => {
     document.getElementById('yourTurn').style.visibility = 'hidden';
     socket.emit('playTurn', {actionState: actionState, bet: bet});
 });
+
+function addClickableSeat(element) {
+    element.addEventListener('click', () => {
+        if (tempPot != null) {
+            for (let i = 0; i < seats.length; i++) {
+                if (seats[i] == element) {
+                    socket.emit('winner', {index: i, pot: tempPot});
+                    tempPot = null;
+                    break;
+                }
+            }
+        }
+    });
+}
 
 function presentScreen(screen) {
     for (let i = 0; i < screens.length; i++) {
