@@ -88,7 +88,7 @@ joinSubmitButton.addEventListener('click', () => {
 
 socket.on('joinGame', (joinCode) => {
     if (joinCode == -1){
-        document.getElementById('joinError').innerHTML= "<Invalid code entered.";
+        document.getElementById('joinError').innerHTML= "Invalid code entered.";
     }
     else if (joinCode == -2){
         document.getElementById('joinError').innerHTML= "The room you are trying to enter is full.";
@@ -97,6 +97,11 @@ socket.on('joinGame', (joinCode) => {
         document.getElementById('joinCodeNumber').innerHTML = joinCode;
         presentScreen(waitingScreen);
     }
+}); 
+
+socket.on('playerLeft', (username) => {
+    document.getElementById('waitingError').innerHTML = username + " has disconnected.";
+    presentScreen(waitingScreen);
 }); 
 
 socket.on('newPlayerJoined', (data) => {
