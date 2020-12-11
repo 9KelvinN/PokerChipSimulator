@@ -249,7 +249,7 @@ body {
 .text {
     text-align: center;
     color:  #D4AF37;
-    font-size: 140%;
+    font-size: 2vh;
     font-family: 'Cinzel';
 }
 
@@ -310,7 +310,7 @@ body {
 .dollar {
     position: absolute;
     bottom: 4%;
-    font-size: 135%;
+    font-size: 2.5vh;
     width: 100%;
     z-index: 2;
     color: #177408;
@@ -330,12 +330,32 @@ body {
 #potAmount {
     color: #D4AF37;
     padding: 2px;
-    padding-top: 15%;
-    padding-bottom: 15%;
+    padding-top: 0.5vh;
+    padding-bottom: 0.5vh;
     border-style: groove;
     border-radius: 4px;
     border-color: #D4AF37;
     width: 100%;
+}
+
+.nameLabel {
+    font-size: 1.2vw;
+}
+
+.actionStateLabel {
+    font-size: 1.8vh;
+}
+
+#bettingRound {
+    font-size: 2vh;
+}
+
+#callAmount {
+    font-size: 1.6vh;
+}
+
+#callAmount2 {
+    font-size: 1.2vh;
 }
 
 #miscInfo {
@@ -393,6 +413,10 @@ input[type="radio"]:checked+label {
 
 #potAmount {
     font-size: 150%;
+}
+
+#yourTurn {
+    padding-top: 2vh;
 }
 
 @keyframes fadein {
