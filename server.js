@@ -154,6 +154,7 @@ io.on('connection', (socket) => {
             }
             else{
                 io.in('Room:' + user.room).emit('newPlayerJoined', {players: game.players, numPlayers: game.numPlayers});
+                io.in('Room:' + user.room).emit('playerLeft', user.username);
             }
         }
     });  
