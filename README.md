@@ -1,5 +1,5 @@
 # CSE143Final
-Poker Chips Simulator is a web app that simulates the betting of poker chips. It is best used with friends in a real life setting with a deck of cards. The web app is NOT the full implementation of poker; it only simulates the chips.
+Poker Chip Simulator is a web app that simulates the betting of poker chips. It is best used with friends in a real life setting with a deck of cards. The web app is NOT the full implementation of poker; it only simulates the chips.
 
 ## Website:
 To access our final project, Poker Chips Simulator, please go to http://54.218.193.60:3000/. You must have an internet connection and JavaScript must be enabled.
